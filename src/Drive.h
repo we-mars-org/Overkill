@@ -39,7 +39,7 @@ class Drive
 
 		float lastPowerVals[DriveMotors::NUM_DRIVE_MOTORS];
 
-		const uint32_t maxSpeed = (uint32_t) 2400 * drivePeriod / 1000000; // Encoder counts per loop period
+		const float maxSpeed = (float)(2400 * drivePeriod / 1000000); // Encoder counts per loop period
 
 		const double kIntegral = 0.003;
 

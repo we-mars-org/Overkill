@@ -7,6 +7,8 @@
 
 #include <Drive.h>
 
+#include <iostream>
+
 Drive::Drive(Joystick *joystick)
 {
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
@@ -43,10 +45,10 @@ void Drive::update()
 	float forwardSpeed = -joystick->GetRawAxis(JoystickAxes::DriveForward);
 	float turnSpeed = joystick->GetRawAxis(JoystickAxes::DriveTurn);
 
-	if(abs(forwardSpeed) < 0.05)
+	if(fabs(forwardSpeed) < 0.05)
 		forwardSpeed = 0;
 
-	if(abs(turnSpeed) < 0.05)
+	if(fabs(turnSpeed) < 0.05)
 		turnSpeed = 0;
 
 	float leftSpeed = constrain(forwardSpeed + turnSpeed, -1, 1);
@@ -71,7 +73,6 @@ void Drive::update()
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
 		encoderVals[i] = encoders[i]->GetRaw();
-//		std::cout << "enc[" << i << "] = " << encoderVals[i] << std::endl;
 	}
 
 	float speedErrorValues[DriveMotors::NUM_DRIVE_MOTORS];
@@ -80,7 +81,6 @@ void Drive::update()
 	{
 		motorSpeeds[i] = encoderVals[i] - lastEncoderVals[i];
 		lastEncoderVals[i] = encoderVals[i];
-//		std::cout << "speed[" << i << "] = " << motorSpeeds[i] << std::endl;
 	}
 
 	if(!joystick->GetRawButton(JoystickButtons::DriveOverride))
@@ -102,11 +102,14 @@ void Drive::update()
 					adjLeftSpeed = motorSpeeds[i];
 			}
 		}
-		float ratio = std::min(adjLeftSpeed / leftSpeed, adjRightSpeed / rightSpeed);
+		adjLeftSpeed = (leftSpeed == 0) ? 1 : (adjLeftSpeed / leftSpeed);
+		adjRightSpeed = (rightSpeed == 0) ? 1 : (adjRightSpeed / rightSpeed);
+		float ratio = std::min(adjLeftSpeed, adjRightSpeed);
 		ratio = constrain(ratio, -1, 1);
 		leftSpeed *= ratio;
 		rightSpeed *= ratio;
 	}
+
 
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
@@ -118,7 +121,6 @@ void Drive::update()
 		{
 			speedErrorValues[i] = leftSpeed - motorSpeeds[i];
 		}
-
 		lastPowerVals[i] += speedErrorValues[i] * kIntegral;
 		lastPowerVals[i] = constrain(lastPowerVals[i], -1.1, 1.1); // Allow above 1 to see if motor is saturating
 		motorControllers[i]->Set(constrain(lastPowerVals[i], -1, 1));
