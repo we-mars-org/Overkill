@@ -22,7 +22,7 @@ enum JoystickAxes
 
 enum JoystickButtons
 {
-	DriveHalfSpeed = 5,
+	DriveFullSpeed = 5,
 	DriveOverride = 6,
 };
 
@@ -49,7 +49,7 @@ enum ManipulatorMotors
 	NUM_MANIPULATOR_MOTORS,
 };
 
-const uint32_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
+const uint8_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
 {
 	5,
 	4,
@@ -59,7 +59,7 @@ const uint32_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
 	0
 };
 
-const uint32_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
+const uint8_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
 {
 	{0, 1},
 	{2, 3},
@@ -69,7 +69,17 @@ const uint32_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
 	{10, 11}
 };
 
-const uint32_t manipulatorMotorPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+const uint8_t drivePowerChannels[DriveMotors::NUM_DRIVE_MOTORS] =
+{
+	0,
+	1,
+	2,
+	15,
+	14,
+	13
+};
+
+const uint8_t manipulatorMotorPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
 {
 	6,
 	7,
@@ -80,7 +90,7 @@ const uint32_t manipulatorMotorPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
 	14
 };
 
-const uint32_t manipulatorPotentiometerPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+const uint8_t manipulatorPotentiometerPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
 {
 	0,
 	1,

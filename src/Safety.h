@@ -13,16 +13,16 @@
 class Safety
 {
 	public:
-		Safety(Joystick *joystick);
+		Safety(Joystick *joystick, PowerDistributionPanel *pdp);
 		virtual ~Safety();
 		void update();
+		void reset();
 
 	private:
 		std::shared_ptr<DigitalOutput> powerRelay[2];
-
 		uint32_t lastRunTimestamp;
-
 		Joystick *joystick;
+		PowerDistributionPanel *pdp;
 };
 
 #endif /* SRC_SAFETY_H_ */

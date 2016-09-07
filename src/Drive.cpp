@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-Drive::Drive(Joystick *joystick)
+Drive::Drive(Joystick *joystick, PowerDistributionPanel *pdp)
 {
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
@@ -17,15 +17,9 @@ Drive::Drive(Joystick *joystick)
 		encoders[i] = std::make_shared<Encoder>(driveEncoderPins[i][0], driveEncoderPins[i][1]);
 	}
 
-	lastRunTimestamp = getTimestampMicros() - drivePeriod;
-
-	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
-	{
-		lastPowerVals[i] = 0;
-		lastEncoderVals[i] = 0;
-	}
-
 	this->joystick = joystick;
+	this->pdp = pdp;
+	reset();
 }
 
 Drive::~Drive()
@@ -54,17 +48,15 @@ void Drive::update()
 	float leftSpeed = constrain(forwardSpeed + turnSpeed, -1, 1);
 	float rightSpeed = -constrain(forwardSpeed - turnSpeed, -1, 1);
 
-	bool halfSpeed = joystick->GetRawButton(JoystickButtons::DriveHalfSpeed);
-
-	if(halfSpeed)
-	{
-		leftSpeed = map(leftSpeed, -1, 1, -maxSpeed / 2, maxSpeed / 2);
-		rightSpeed = map(rightSpeed, -1, 1, -maxSpeed / 2, maxSpeed / 2);
-	}
-	else
+	if(joystick->GetRawButton(JoystickButtons::DriveFullSpeed))
 	{
 		leftSpeed = map(leftSpeed, -1, 1, -maxSpeed, maxSpeed);
 		rightSpeed = map(rightSpeed, -1, 1, -maxSpeed, maxSpeed);
+	}
+	else // half speed
+	{
+		leftSpeed = map(leftSpeed, -1, 1, -maxSpeed / 2, maxSpeed / 2);
+		rightSpeed = map(rightSpeed, -1, 1, -maxSpeed / 2, maxSpeed / 2);
 	}
 
 	int encoderVals[DriveMotors::NUM_DRIVE_MOTORS];
@@ -124,6 +116,8 @@ void Drive::update()
 		lastPowerVals[i] += speedErrorValues[i] * kIntegral;
 		lastPowerVals[i] = constrain(lastPowerVals[i], -1.1, 1.1); // Allow above 1 to see if motor is saturating
 		motorControllers[i]->Set(constrain(lastPowerVals[i], -1, 1));
+
+		std::cout << "Motor " << i << " Current = " << pdp->GetCurrent(drivePowerChannels[i]) << std::endl;
 	}
 }
 
@@ -132,5 +126,8 @@ void Drive::reset()
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
 		lastPowerVals[i] = 0;
+		lastEncoderVals[i] = encoders[i]->GetRaw();
+		motorControllers[i]->Set(0);
 	}
+	lastRunTimestamp = getTimestampMicros() - drivePeriod;
 }

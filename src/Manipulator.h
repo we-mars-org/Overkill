@@ -13,7 +13,7 @@
 class Manipulator
 {
 	public:
-		Manipulator(Joystick *joystick);
+		Manipulator(Joystick *joystick, PowerDistributionPanel *pdp);
 		virtual ~Manipulator();
 		void update();
 		void reset();
@@ -23,10 +23,9 @@ class Manipulator
 	private:
 		std::shared_ptr<Victor> motorControllers[ManipulatorMotors::NUM_MANIPULATOR_MOTORS];
 		std::shared_ptr<AnalogPotentiometer> potentiometers[ManipulatorMotors::NUM_MANIPULATOR_MOTORS];
-
 		uint32_t lastRunTimestamp;
-
 		Joystick *joystick;
+		PowerDistributionPanel *pdp;
 };
 
 #endif /* SRC_MANIPULATOR_H_ */

@@ -7,17 +7,19 @@
 
 class Robot: public SampleRobot
 {
-	Joystick controller;
+	Joystick joystick;
+	PowerDistributionPanel pdp;
 	Drive drive;
 	Manipulator manipulator;
 	Safety safety;
 
 public:
 	Robot() :
-			controller(1),
-			drive(&controller),
-			manipulator(&controller),
-			safety(&controller)
+			joystick(1),
+			pdp(),
+			drive(&joystick, &pdp),
+			manipulator(&joystick, &pdp),
+			safety(&joystick, &pdp)
 	{
 	}
 
@@ -37,6 +39,9 @@ public:
 
 	void OperatorControl()
 	{
+		safety.reset();
+		drive.reset();
+		manipulator.reset();
 		while (IsOperatorControl() && IsEnabled())
 		{
 			safety.update();

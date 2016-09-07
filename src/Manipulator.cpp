@@ -7,7 +7,7 @@
 
 #include <Manipulator.h>
 
-Manipulator::Manipulator(Joystick *joystick)
+Manipulator::Manipulator(Joystick *joystick, PowerDistributionPanel *pdp)
 {
 	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS; ++i)
 	{
@@ -16,8 +16,8 @@ Manipulator::Manipulator(Joystick *joystick)
 	}
 
 	this->joystick = joystick;
-
-	lastRunTimestamp = getTimestampMicros() - manipulatorPeriod;
+	this->pdp = pdp;
+	reset();
 }
 
 Manipulator::~Manipulator()
@@ -37,5 +37,5 @@ void Manipulator::update()
 
 void Manipulator::reset()
 {
-	// TODO Add reset code
+	lastRunTimestamp = getTimestampMicros() - manipulatorPeriod;
 }

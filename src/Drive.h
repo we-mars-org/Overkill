@@ -26,7 +26,7 @@
 class Drive
 {
 	public:
-		Drive(Joystick *controller);
+		Drive(Joystick *controller, PowerDistributionPanel *pdp);
 		virtual ~Drive();
 		void update();
 		void reset();
@@ -36,16 +36,13 @@ class Drive
 		std::shared_ptr<Encoder> encoders[DriveMotors::NUM_DRIVE_MOTORS];
 
 		uint32_t lastEncoderVals[DriveMotors::NUM_DRIVE_MOTORS];
-
 		float lastPowerVals[DriveMotors::NUM_DRIVE_MOTORS];
-
 		const float maxSpeed = (float)(2400 * drivePeriod / 1000000); // Encoder counts per loop period
-
-		const double kIntegral = 0.003;
+		const double kIntegral = 0.001;
 
 		uint32_t lastRunTimestamp;
-
 		Joystick *joystick;
+		PowerDistributionPanel *pdp;
 };
 
 #endif /* SRC_DRIVE_H_ */
