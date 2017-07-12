@@ -3,7 +3,7 @@
 #include <Manipulator.h>
 #include <Safety.h>
 
-//28750X18M
+//FRC Software Installation Code: 28750X18M
 
 class Robot: public SampleRobot
 {

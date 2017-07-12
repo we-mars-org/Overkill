@@ -1,10 +1,3 @@
-/*
- * DozerDrive.cpp
- *
- *  Created on: Aug 4, 2016
- *      Author: Agoston
- */
-
 #include <Drive.h>
 
 #include <iostream>
@@ -22,11 +15,6 @@ Drive::Drive(Joystick *joystick, PowerDistributionPanel *pdp)
 	reset();
 }
 
-Drive::~Drive()
-{
-	// TODO Auto-generated destructor stub
-}
-
 void Drive::update()
 {
 	uint32_t timestampMicros = getTimestampMicros();
@@ -35,6 +23,9 @@ void Drive::update()
 		return;
 
 	lastRunTimestamp = timestampMicros;
+
+	// Calculate desired motor speeds from joystick input
+	// The max speed is limited to 50% unless the DriveFullSpeed button on the joystick is held
 
 	float forwardSpeed = -joystick->GetRawAxis(JoystickAxes::DriveForward);
 	float turnSpeed = joystick->GetRawAxis(JoystickAxes::DriveTurn);
@@ -53,11 +44,13 @@ void Drive::update()
 		leftSpeed = map(leftSpeed, -1, 1, -maxSpeed, maxSpeed);
 		rightSpeed = map(rightSpeed, -1, 1, -maxSpeed, maxSpeed);
 	}
-	else // half speed
+	else // Half speed
 	{
 		leftSpeed = map(leftSpeed, -1, 1, -maxSpeed / 2, maxSpeed / 2);
 		rightSpeed = map(rightSpeed, -1, 1, -maxSpeed / 2, maxSpeed / 2);
 	}
+
+	// Calculate current motor speeds
 
 	int encoderVals[DriveMotors::NUM_DRIVE_MOTORS];
 	int motorSpeeds[DriveMotors::NUM_DRIVE_MOTORS];
@@ -67,17 +60,20 @@ void Drive::update()
 		encoderVals[i] = encoders[i]->GetRaw();
 	}
 
-	float speedErrorValues[DriveMotors::NUM_DRIVE_MOTORS];
-
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
 		motorSpeeds[i] = encoderVals[i] - lastEncoderVals[i];
 		lastEncoderVals[i] = encoderVals[i];
 	}
 
+	// Perform motor saturation compensation by changing the desired speeds if a motor is saturated
+	// This helps maintain the drive trajectory even if a motor if facing increased torque loading
+	// Can be overridden by holding the DriveOverride button on the joystick (helpful if rover is stuck)
+
 	if(!joystick->GetRawButton(JoystickButtons::DriveOverride))
 	{
-		// Perform motor saturation compensation by changing the desired speeds if a motor is saturated
+
+
 		float adjLeftSpeed = leftSpeed, adjRightSpeed = rightSpeed;
 		for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 		{
@@ -102,6 +98,9 @@ void Drive::update()
 		rightSpeed *= ratio;
 	}
 
+	// Perform integral control to obtain desired motor speed
+
+	float speedErrorValues[DriveMotors::NUM_DRIVE_MOTORS];
 
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
@@ -125,9 +124,9 @@ void Drive::reset()
 {
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
+		motorControllers[i]->Set(0);
 		lastPowerVals[i] = 0;
 		lastEncoderVals[i] = encoders[i]->GetRaw();
-		motorControllers[i]->Set(0);
 	}
 	lastRunTimestamp = getTimestampMicros() - drivePeriod;
 }

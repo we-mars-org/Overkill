@@ -1,10 +1,3 @@
-/*
- * Safety.h
- *
- *  Created on: Sep 3, 2016
- *      Author: Agoston
- */
-
 #ifndef SRC_SAFETY_H_
 #define SRC_SAFETY_H_
 
@@ -14,7 +7,6 @@ class Safety
 {
 	public:
 		Safety(Joystick *joystick, PowerDistributionPanel *pdp);
-		virtual ~Safety();
 		void update();
 		void reset();
 

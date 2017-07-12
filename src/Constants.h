@@ -1,10 +1,3 @@
-/*
- * DozersPins.h
- *
- *  Created on: Aug 18, 2016
- *      Author: Agoston
- */
-
 #ifndef SRC_CONSTANTS_H_
 #define SRC_CONSTANTS_H_
 
@@ -14,18 +7,21 @@
 
 #include <WPILib.h>
 
+// Assign names to Joystick axes
 enum JoystickAxes
 {
 	DriveForward = 1,
 	DriveTurn = 4,
 };
 
+// Assign names to Joystick buttons
 enum JoystickButtons
 {
 	DriveFullSpeed = 5,
 	DriveOverride = 6,
 };
 
+// Assign IDs to Drive Motors for use with other const arrays defined below
 enum DriveMotors
 {
 	RightFrontMotor = 0,
@@ -37,6 +33,7 @@ enum DriveMotors
 	NUM_DRIVE_MOTORS,
 };
 
+// Assign IDs to Manipulator Motors for use with other const arrays defined below
 enum ManipulatorMotors
 {
 	BaseMotor = 0,
@@ -49,6 +46,7 @@ enum ManipulatorMotors
 	NUM_MANIPULATOR_MOTORS,
 };
 
+// Array associating PWM pins to corresponding Drive Motor IDs (array index)
 const uint8_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
 {
 	5,
@@ -59,6 +57,7 @@ const uint8_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
 	0
 };
 
+// Array associating encoder DIO pins to corresponding Drive Motor IDs (array index)
 const uint8_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
 {
 	{0, 1},
@@ -69,6 +68,7 @@ const uint8_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
 	{10, 11}
 };
 
+// Array associating PDP current measure channels to corresponding Drive Motor IDs (array index)
 const uint8_t drivePowerChannels[DriveMotors::NUM_DRIVE_MOTORS] =
 {
 	0,
@@ -79,6 +79,7 @@ const uint8_t drivePowerChannels[DriveMotors::NUM_DRIVE_MOTORS] =
 	13
 };
 
+// Array associating PWM pins to corresponding Manipulator Motor IDs (array index)
 const uint8_t manipulatorMotorPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
 {
 	6,
@@ -90,6 +91,7 @@ const uint8_t manipulatorMotorPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
 	14
 };
 
+// Array associating potentiometer AI pins to corresponding Manipulator Motor IDs (array index)
 const uint8_t manipulatorPotentiometerPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
 {
 	0,
@@ -101,20 +103,63 @@ const uint8_t manipulatorPotentiometerPins[ManipulatorMotors::NUM_MANIPULATOR_MO
 	6
 };
 
-/**
- * Drive loop run period in microseconds
- */
-const uint32_t drivePeriod = 50 * 1000;
+// Array associating potentiometer scaling value (covert to degrees) to corresponding Manipulator Motor IDs (array index)
+const double manipulatorPotentiometerScale[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+{
+	1.0,
+	1.0,
+	1.0,
+	1.0,
+	1.0,
+	1.0,
+	1.0
+};
 
-/**
- * Manipulator loop run period in microseconds
- */
-const uint32_t manipulatorPeriod = 25 * 1000;
+// Array associating potentiometer offset value (in degrees) to corresponding Manipulator Motor IDs (array index)
+const double manipulatorPotentiometerOffset[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+{
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0,
+	0.0
+};
 
-/**
- * Safety loop run period in microseconds
- */
-const uint32_t safetyPeriod = 100 * 1000;
+// Array associating joint limits (in degrees) to corresponding Manipulator Motor IDs (array index)
+const double manipulatorJointLimits[ManipulatorMotors::NUM_MANIPULATOR_MOTORS][2] =
+{
+	{-65.0, 65.0}, // Hits hard stop at 70
+	{-65.0, 65.0}, // Hits hard stop at 70
+	{-140.0, 140.0}, // Hits hard stop at 147
+	{-140.0, 140.0}, // Hits hard stop at 146
+	{-135.0, 135.0}, // Hits hard stop at 140
+	{-140.0, 140.0}, // Hits hard stop at 146
+	{-50.0, 50.0} // Hits hard stop at 54
+};
+
+// Array associating stowed pose joint angles to corresponding Manipulator Motor IDs (array index)
+const double manipulatorPositionStow[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+{
+	0.0,
+	-65.0,
+	140.0,
+	0.0,
+	-135.0,
+	0.0,
+	0.0
+};
+
+// Drive loop run period in microseconds
+const uint32_t drivePeriod = 40 * 1000;
+
+// Manipulator loop run period in microseconds
+const uint32_t manipulatorPeriod = 20 * 1000;
+
+
+// Safety loop run period in microseconds
+const uint32_t safetyPeriod = 80 * 1000;
 
 /**
  * Gets FPGA Timestamp in microseconds. Rolls over in 71 minutes.

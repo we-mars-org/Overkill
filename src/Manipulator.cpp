@@ -1,10 +1,3 @@
-/*
- * Manipulator.cpp
- *
- *  Created on: Aug 11, 2016
- *      Author: Agoston
- */
-
 #include <Manipulator.h>
 
 Manipulator::Manipulator(Joystick *joystick, PowerDistributionPanel *pdp)
@@ -12,17 +5,13 @@ Manipulator::Manipulator(Joystick *joystick, PowerDistributionPanel *pdp)
 	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS; ++i)
 	{
 		motorControllers[i] = std::make_shared<Victor>(manipulatorMotorPins[i]);
-		potentiometers[i] = std::make_shared<AnalogPotentiometer>(manipulatorPotentiometerPins[i]);
+		potentiometers[i] = std::make_shared<AnalogPotentiometer>(manipulatorPotentiometerPins[i],
+				manipulatorPotentiometerScale[i], manipulatorPotentiometerOffset[i]);
 	}
 
 	this->joystick = joystick;
 	this->pdp = pdp;
 	reset();
-}
-
-Manipulator::~Manipulator()
-{
-	// TODO Auto-generated destructor stub
 }
 
 void Manipulator::update()
@@ -33,9 +22,17 @@ void Manipulator::update()
 		return;
 
 	lastRunTimestamp = timestampMicros;
+
+
 }
 
 void Manipulator::reset()
 {
+	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS; ++i)
+	{
+		motorControllers[i]->Set(0);
+		setPosition[i] = potentiometers[i]->Get();
+		destPosition[i] = manipulatorPositionStow[i];
+	}
 	lastRunTimestamp = getTimestampMicros() - manipulatorPeriod;
 }

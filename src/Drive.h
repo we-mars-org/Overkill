@@ -1,10 +1,3 @@
-/*
- * DozerDrive.h
- *
- *  Created on: Aug 4, 2016
- *      Author: Agoston
- */
-
 #ifndef SRC_DRIVE_H_
 #define SRC_DRIVE_H_
 
@@ -27,18 +20,20 @@ class Drive
 {
 	public:
 		Drive(Joystick *controller, PowerDistributionPanel *pdp);
-		virtual ~Drive();
 		void update();
 		void reset();
 
 	private:
+		// Maximum drive motor velocity (refer to calculation above)
+		const float maxSpeed = (float)(2400 * drivePeriod / 1000000); // Encoder counts per loop period
+		// Integral constant for drive speed control (empirically tuned)
+		const double kIntegral = 0.001;
+
 		std::shared_ptr<Victor> motorControllers[DriveMotors::NUM_DRIVE_MOTORS];
 		std::shared_ptr<Encoder> encoders[DriveMotors::NUM_DRIVE_MOTORS];
 
 		uint32_t lastEncoderVals[DriveMotors::NUM_DRIVE_MOTORS];
 		float lastPowerVals[DriveMotors::NUM_DRIVE_MOTORS];
-		const float maxSpeed = (float)(2400 * drivePeriod / 1000000); // Encoder counts per loop period
-		const double kIntegral = 0.001;
 
 		uint32_t lastRunTimestamp;
 		Joystick *joystick;

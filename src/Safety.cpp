@@ -1,10 +1,3 @@
-/*
- * Safety.cpp
- *
- *  Created on: Sep 3, 2016
- *      Author: Agoston
- */
-
 #include <Safety.h>
 
 Safety::Safety(Joystick *joystick, PowerDistributionPanel *pdp)
@@ -18,11 +11,6 @@ Safety::Safety(Joystick *joystick, PowerDistributionPanel *pdp)
 	this->joystick = joystick;
 	this->pdp = pdp;
 	reset();
-}
-
-Safety::~Safety()
-{
-	// TODO Auto-generated destructor stub
 }
 
 void Safety::update()
