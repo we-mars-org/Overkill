@@ -1,8 +1,6 @@
 #include <Drive.h>
 
-#include <iostream>
-
-Drive::Drive(Joystick *joystick, PowerDistributionPanel *pdp)
+Drive::Drive(Joystick *controller, PowerDistributionPanel *pdpanel)
 {
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
@@ -10,8 +8,8 @@ Drive::Drive(Joystick *joystick, PowerDistributionPanel *pdp)
 		encoders[i] = std::make_shared<Encoder>(driveEncoderPins[i][0], driveEncoderPins[i][1]);
 	}
 
-	this->joystick = joystick;
-	this->pdp = pdp;
+	this->joystick = controller;
+	this->pdp = pdpanel;
 	reset();
 }
 
@@ -23,6 +21,22 @@ void Drive::update()
 		return;
 
 	lastRunTimestamp = timestampMicros;
+
+	// Get max current setting
+
+	float maxCurrent = map(joystick->GetRawAxis(JoystickAxes::CurrentLimit), 1, -1, maxCurrentLower, maxCurrentUpper);
+
+	// Get motor currents and use it to adjust the power cap
+
+	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
+	{
+		lastCurrentVals[i] = ((1-currentFilter) * lastCurrentVals[i]) + currentFilter * pdp->GetCurrent(drivePowerChannels[i]);
+		if(lastCurrentVals[i] > maxCurrent)
+			capPowerVals[i] -= powerChangeMax;
+		else
+			capPowerVals[i] += powerChangeMax;
+		capPowerVals[i] = constrain(capPowerVals[i], 0, 1);
+	}
 
 	// Calculate desired motor speeds from joystick input
 	// The max speed is limited to 50% unless the DriveFullSpeed button on the joystick is held
@@ -37,7 +51,7 @@ void Drive::update()
 		turnSpeed = 0;
 
 	float leftSpeed = constrain(forwardSpeed + turnSpeed, -1, 1);
-	float rightSpeed = -constrain(forwardSpeed - turnSpeed, -1, 1);
+	float rightSpeed = constrain(forwardSpeed - turnSpeed, -1, 1);
 
 	if(joystick->GetRawButton(JoystickButtons::DriveFullSpeed))
 	{
@@ -52,18 +66,13 @@ void Drive::update()
 
 	// Calculate current motor speeds
 
-	int encoderVals[DriveMotors::NUM_DRIVE_MOTORS];
-	int motorSpeeds[DriveMotors::NUM_DRIVE_MOTORS];
+	int motorSpeeds[DriveMotors::NUM_DRIVE_MOTORS], encoderVal = 0;
 
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
-		encoderVals[i] = encoders[i]->GetRaw();
-	}
-
-	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
-	{
-		motorSpeeds[i] = encoderVals[i] - lastEncoderVals[i];
-		lastEncoderVals[i] = encoderVals[i];
+		encoderVal = encoders[i]->GetRaw();
+		motorSpeeds[i] = encoderVal - lastEncoderVals[i];
+		lastEncoderVals[i] = encoderVal;
 	}
 
 	// Perform motor saturation compensation by changing the desired speeds if a motor is saturated
@@ -72,21 +81,19 @@ void Drive::update()
 
 	if(!joystick->GetRawButton(JoystickButtons::DriveOverride))
 	{
-
-
 		float adjLeftSpeed = leftSpeed, adjRightSpeed = rightSpeed;
 		for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 		{
 			if(i <= DriveMotors::RightRearMotor)
 			{
-				if(((adjRightSpeed > motorSpeeds[i]) && (lastPowerVals[i] > 1)) ||
-						((adjRightSpeed < motorSpeeds[i]) && (lastPowerVals[i] < -1)))
+				if(((adjRightSpeed > motorSpeeds[i]) && (lastPowerVals[i] > capPowerVals[i])) ||
+						((adjRightSpeed < motorSpeeds[i]) && (lastPowerVals[i] < -capPowerVals[i])))
 					adjRightSpeed = motorSpeeds[i];
 			}
 			else
 			{
-				if(((adjLeftSpeed > motorSpeeds[i]) && (lastPowerVals[i] > 1)) ||
-						((adjLeftSpeed < motorSpeeds[i]) && (lastPowerVals[i] < -1)))
+				if(((adjLeftSpeed > motorSpeeds[i]) && (lastPowerVals[i] > capPowerVals[i])) ||
+						((adjLeftSpeed < motorSpeeds[i]) && (lastPowerVals[i] < -capPowerVals[i])))
 					adjLeftSpeed = motorSpeeds[i];
 			}
 		}
@@ -100,21 +107,27 @@ void Drive::update()
 
 	// Perform integral control to obtain desired motor speed
 
-	float speedErrorValues[DriveMotors::NUM_DRIVE_MOTORS];
+	float speedErrorValue = 0, powerErrorValue = 0;
 
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
 		if(i <= DriveMotors::RightRearMotor)
-		{
-			speedErrorValues[i] = rightSpeed - motorSpeeds[i];
-		}
+			speedErrorValue = rightSpeed - motorSpeeds[i];
 		else
-		{
-			speedErrorValues[i] = leftSpeed - motorSpeeds[i];
-		}
-		lastPowerVals[i] += speedErrorValues[i] * kIntegral;
-		lastPowerVals[i] = constrain(lastPowerVals[i], -1.1, 1.1); // Allow above 1 to see if motor is saturating
-		motorControllers[i]->Set(constrain(lastPowerVals[i], -1, 1));
+			speedErrorValue = leftSpeed - motorSpeeds[i];
+
+		powerErrorValue = speedErrorValue * kIntegral;
+
+		if(powerErrorValue > powerChangeThresh)
+			powerErrorValue = constrain(powerErrorValue, powerChangeMin, powerChangeMax);
+		else if(powerErrorValue < -powerChangeThresh)
+			powerErrorValue = constrain(powerErrorValue, -powerChangeMax, -powerChangeMin);
+		else
+			powerErrorValue = 0;
+
+		lastPowerVals[i] += powerErrorValue;
+		lastPowerVals[i] = constrain(lastPowerVals[i], -(capPowerVals[i] + 0.1), (capPowerVals[i] + 0.1)); // Allow extra to see if motor is saturating
+		motorControllers[i]->Set(constrain(lastPowerVals[i], -capPowerVals[i], capPowerVals[i]));
 
 		std::cout << "Motor " << i << " Current = " << pdp->GetCurrent(drivePowerChannels[i]) << std::endl;
 	}
@@ -126,6 +139,8 @@ void Drive::reset()
 	{
 		motorControllers[i]->Set(0);
 		lastPowerVals[i] = 0;
+		lastCurrentVals[i] = 0;
+		capPowerVals[i] = 0;
 		lastEncoderVals[i] = encoders[i]->GetRaw();
 	}
 	lastRunTimestamp = getTimestampMicros() - drivePeriod;

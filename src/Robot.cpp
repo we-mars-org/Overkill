@@ -3,7 +3,7 @@
 #include <Manipulator.h>
 #include <Safety.h>
 
-//FRC Software Installation Code: 28750X18M
+//FRC Code: M82X12516
 
 class Robot: public SampleRobot
 {
@@ -15,7 +15,7 @@ class Robot: public SampleRobot
 
 public:
 	Robot() :
-			joystick(1),
+			joystick(0),
 			pdp(),
 			drive(&joystick, &pdp),
 			manipulator(&joystick, &pdp),

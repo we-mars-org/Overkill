@@ -1,6 +1,6 @@
 #include <Manipulator.h>
 
-Manipulator::Manipulator(Joystick *joystick, PowerDistributionPanel *pdp)
+Manipulator::Manipulator(Joystick *controller, PowerDistributionPanel *pdpanel)
 {
 	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS; ++i)
 	{
@@ -9,8 +9,8 @@ Manipulator::Manipulator(Joystick *joystick, PowerDistributionPanel *pdp)
 				manipulatorPotentiometerScale[i], manipulatorPotentiometerOffset[i]);
 	}
 
-	this->joystick = joystick;
-	this->pdp = pdp;
+	this->joystick = controller;
+	this->pdp = pdpanel;
 	reset();
 }
 
@@ -23,6 +23,12 @@ void Manipulator::update()
 
 	lastRunTimestamp = timestampMicros;
 
+	//motorControllers[2]->Set(-joystick->GetRawAxis(JoystickAxes::DriveForward));
+	//motorControllers[1]->Set(joystick->GetRawAxis(JoystickAxes::DriveTurn));
+
+	//std::cout << "Motor Current = " << pdp->GetCurrent(manipulatorPowerChannels[1]) << std::endl;
+	//std::cout << "Motor Current = " << pdp->GetCurrent(manipulatorPowerChannels[2]) << std::endl;
+	//std::cout << "Motor Current = " << pdp->GetCurrent(manipulatorPowerChannels[7]) << std::endl;
 
 }
 

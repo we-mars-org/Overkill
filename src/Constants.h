@@ -4,21 +4,35 @@
 #include <cstdint>
 #include <memory>
 #include <cmath>
+#include <iostream>
 
 #include <WPILib.h>
+
+// Drive loop run period in microseconds
+const uint32_t drivePeriod = 40 * 1000;
+
+// Manipulator loop run period in microseconds
+const uint32_t manipulatorPeriod = 20 * 1000;
+
+// Safety loop run period in microseconds
+const uint32_t safetyPeriod = 80 * 1000;
+
+// Relay DIO pin number: high keeps relay on, low turns it off
+const uint8_t relayPin = 25;
 
 // Assign names to Joystick axes
 enum JoystickAxes
 {
 	DriveForward = 1,
-	DriveTurn = 4,
+	DriveTurn = 0,
+	CurrentLimit = 2
 };
 
 // Assign names to Joystick buttons
 enum JoystickButtons
 {
-	DriveFullSpeed = 5,
-	DriveOverride = 6,
+	DriveFullSpeed = 1,
+	DriveOverride = 2,
 };
 
 // Assign IDs to Drive Motors for use with other const arrays defined below
@@ -31,6 +45,39 @@ enum DriveMotors
 	LeftMiddleMotor,
 	LeftRearMotor,
 	NUM_DRIVE_MOTORS,
+};
+
+// Array associating PWM pins to corresponding Drive Motor IDs (array index)
+const uint8_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
+{
+	3,
+	4,
+	5,
+	0,
+	1,
+	2
+};
+
+// Array associating PDP current measure channels to corresponding Drive Motor IDs (array index)
+const uint8_t drivePowerChannels[DriveMotors::NUM_DRIVE_MOTORS] =
+{
+	9,
+	10,
+	11,
+	6,
+	5,
+	4
+};
+
+// Array associating encoder DIO pins to corresponding Drive Motor IDs (array index)
+const uint8_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
+{
+	{7, 6},
+	{9, 8},
+	{15, 14},
+	{0, 1},
+	{2, 3},
+	{4, 5}
 };
 
 // Assign IDs to Manipulator Motors for use with other const arrays defined below
@@ -46,49 +93,29 @@ enum ManipulatorMotors
 	NUM_MANIPULATOR_MOTORS,
 };
 
-// Array associating PWM pins to corresponding Drive Motor IDs (array index)
-const uint8_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
-{
-	5,
-	4,
-	3,
-	2,
-	1,
-	0
-};
-
-// Array associating encoder DIO pins to corresponding Drive Motor IDs (array index)
-const uint8_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
-{
-	{0, 1},
-	{2, 3},
-	{4, 5},
-	{6, 7},
-	{8, 9},
-	{10, 11}
-};
-
-// Array associating PDP current measure channels to corresponding Drive Motor IDs (array index)
-const uint8_t drivePowerChannels[DriveMotors::NUM_DRIVE_MOTORS] =
-{
-	0,
-	1,
-	2,
-	15,
-	14,
-	13
-};
-
 // Array associating PWM pins to corresponding Manipulator Motor IDs (array index)
 const uint8_t manipulatorMotorPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
 {
-	6,
-	7,
-	8,
-	9,
-	12,
+	17,
+	16,
+	15,
+	14,
 	13,
-	14
+	12,
+	11
+};
+
+// Array associating PDP current measure channels to corresponding Manipulator Motor IDs (array index)
+const uint8_t manipulatorPowerChannels[ManipulatorMotors::NUM_MANIPULATOR_MOTORS+1] =
+{
+	0,
+	1,
+	3,
+	15,
+	14,
+	13,
+	12,
+	2
 };
 
 // Array associating potentiometer AI pins to corresponding Manipulator Motor IDs (array index)
@@ -150,16 +177,6 @@ const double manipulatorPositionStow[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] 
 	0.0,
 	0.0
 };
-
-// Drive loop run period in microseconds
-const uint32_t drivePeriod = 40 * 1000;
-
-// Manipulator loop run period in microseconds
-const uint32_t manipulatorPeriod = 20 * 1000;
-
-
-// Safety loop run period in microseconds
-const uint32_t safetyPeriod = 80 * 1000;
 
 /**
  * Gets FPGA Timestamp in microseconds. Rolls over in 71 minutes.
