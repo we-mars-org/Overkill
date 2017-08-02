@@ -7,6 +7,7 @@
 
 class Robot: public SampleRobot
 {
+private:
 	Joystick joystick;
 	PowerDistributionPanel pdp;
 	Drive drive;

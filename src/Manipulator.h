@@ -13,22 +13,69 @@ class Manipulator
 	protected:
 
 	private:
-		// Maximum joint angle velocity (in degrees per second)
-		const double maxSpeed = 100.0;
+		// Maximum joint angle velocity (in degrees per second times manipulatorPeriod in seconds/cycle)
+		const float maxSpeed = 100.0 * ((float)manipulatorPeriod / 1000000.0);
 
-		// Maximum joint angle acceleration (in degrees per second squared)
-		const double maxAccel = 100.0;
+		// Maximum joint angle acceleration (in degrees per second squared times manipulatorPeriod in seconds/cycle squared)
+		const float maxAccel = 100.0 * ((float)manipulatorPeriod / 1000000.0) * ((float)manipulatorPeriod / 1000000.0);
 
-		std::shared_ptr<Victor> motorControllers[ManipulatorMotors::NUM_MANIPULATOR_MOTORS];
-		std::shared_ptr<AnalogPotentiometer> potentiometers[ManipulatorMotors::NUM_MANIPULATOR_MOTORS];
+		// Proportional constants for manipulator position control (tuned for balanced acceleration and deceleration)
+		const float kProportional[NUM_MANIPULATOR_MOTORS] =
+		{
+			0.03,
+			0.03,
+			0.03,
+			0.03,
+			0.03,
+			0.03,
+			0.03
+		};
 
-		double setPosition[ManipulatorMotors::NUM_MANIPULATOR_MOTORS];
-		double destPosition[ManipulatorMotors::NUM_MANIPULATOR_MOTORS];
-		double lastPosition[ManipulatorMotors::NUM_MANIPULATOR_MOTORS];
+		// Integral constants for manipulator position control (tuned for balanced acceleration and deceleration)
+		const float kIntegral[NUM_MANIPULATOR_MOTORS] =
+		{
+			0.001,
+			0.001,
+			0.001,
+			0.001,
+			0.001,
+			0.001,
+			0.001
+		};
+
+		// Integral accumulator limit to control oscillations
+		const float kIntegralLimit = 0.2;
+
+		// Maximum and minimum steps by which the motor controller power can change by per cycle
+		const float powerChangeMax = 0.10;
+		const float powerChangeMin = 0.005;
+
+		// Threshold value below which a power change will be ignored (power error value deadband)
+		const float powerChangeThresh = 0.002;
+
+		// Maximum current value, upper and lower bounds, adjusted by throttle
+		const float maxCurrentUpper = 15;
+		const float maxCurrentLower = 10;
+
+		// Current measurement LPF parameter; 1 = fastest response, 0 = no response
+		const float currentFilter = 0.6;
+
+		std::shared_ptr<Victor> motorControllers[NUM_MANIPULATOR_MOTORS];
+		std::shared_ptr<AnalogPotentiometer> potentiometers[NUM_MANIPULATOR_MOTORS];
+
+		float destPosition[NUM_MANIPULATOR_MOTORS];
+		float trackPosition[NUM_MANIPULATOR_MOTORS];
+
+		float lastSpeed[NUM_MANIPULATOR_MOTORS];
+		float lastPower[NUM_MANIPULATOR_MOTORS];
+		float integralAccumulator[NUM_MANIPULATOR_MOTORS];
+		float lastCurrent[NUM_MANIPULATOR_MOTORS+1];
+		float capPower[NUM_MANIPULATOR_MOTORS+1];
 
 		uint32_t lastRunTimestamp;
 		Joystick *joystick;
 		PowerDistributionPanel *pdp;
+		Preferences *perfs;
 };
 
 #endif /* SRC_MANIPULATOR_H_ */

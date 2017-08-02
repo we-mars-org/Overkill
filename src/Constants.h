@@ -4,18 +4,20 @@
 #include <cstdint>
 #include <memory>
 #include <cmath>
+#include <algorithm>
+#include <string>
 #include <iostream>
 
 #include <WPILib.h>
 
-// Drive loop run period in microseconds
-const uint32_t drivePeriod = 40 * 1000;
+// Drive loop run period in microseconds (unit is microseconds per cycle)
+const uint32_t drivePeriod = 50 * 1000;
 
-// Manipulator loop run period in microseconds
-const uint32_t manipulatorPeriod = 20 * 1000;
+// Manipulator loop run period in microseconds (unit is microseconds per cycle)
+const uint32_t manipulatorPeriod = 25 * 1000;
 
-// Safety loop run period in microseconds
-const uint32_t safetyPeriod = 80 * 1000;
+// Safety loop run period in microseconds (unit is microseconds per cycle)
+const uint32_t safetyPeriod = 100 * 1000;
 
 // Relay DIO pin number: high keeps relay on, low turns it off
 const uint8_t relayPin = 25;
@@ -31,8 +33,11 @@ enum JoystickAxes
 // Assign names to Joystick buttons
 enum JoystickButtons
 {
-	DriveFullSpeed = 1,
-	DriveOverride = 2,
+	DriveEnable = 1,
+	DriveFullSpeed = 2,
+	DriveOverride = 3,
+	ManipulatorControllable = 4,
+	ManipulatorEnable = 5
 };
 
 // Assign IDs to Drive Motors for use with other const arrays defined below
@@ -44,11 +49,22 @@ enum DriveMotors
 	LeftFrontMotor,
 	LeftMiddleMotor,
 	LeftRearMotor,
-	NUM_DRIVE_MOTORS,
+	NUM_DRIVE_MOTORS
+};
+
+// Array associating motor names to corresponding Drive Motor IDs (array index)
+const std::string driveMotorNames[NUM_DRIVE_MOTORS] =
+{
+	"Right Front",
+	"Right Middle",
+	"Right Rear",
+	"Left Front",
+	"Left Middle",
+	"Left Rear"
 };
 
 // Array associating PWM pins to corresponding Drive Motor IDs (array index)
-const uint8_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
+const uint8_t driveMotorPins[NUM_DRIVE_MOTORS] =
 {
 	3,
 	4,
@@ -59,7 +75,7 @@ const uint8_t driveMotorPins[DriveMotors::NUM_DRIVE_MOTORS] =
 };
 
 // Array associating PDP current measure channels to corresponding Drive Motor IDs (array index)
-const uint8_t drivePowerChannels[DriveMotors::NUM_DRIVE_MOTORS] =
+const uint8_t drivePowerChannels[NUM_DRIVE_MOTORS] =
 {
 	9,
 	10,
@@ -70,7 +86,7 @@ const uint8_t drivePowerChannels[DriveMotors::NUM_DRIVE_MOTORS] =
 };
 
 // Array associating encoder DIO pins to corresponding Drive Motor IDs (array index)
-const uint8_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
+const uint8_t driveEncoderPins[NUM_DRIVE_MOTORS][2] =
 {
 	{7, 6},
 	{9, 8},
@@ -84,17 +100,43 @@ const uint8_t driveEncoderPins[DriveMotors::NUM_DRIVE_MOTORS][2] =
 enum ManipulatorMotors
 {
 	BaseMotor = 0,
-	ShoulderMotor,
+	ShoulderMotor1,
 	ElbowMotor,
 	PitchMotor,
 	YawMotor,
 	RollMotor,
 	GripperMotor,
-	NUM_MANIPULATOR_MOTORS,
+	ShoulderMotor2,
+	NUM_MANIPULATOR_MOTORS = ShoulderMotor2
+};
+
+// Array associating motor names to corresponding Manipulator Motor IDs (array index)
+const std::string manipulatorMotorNames[NUM_MANIPULATOR_MOTORS+1] =
+{
+	"Base",
+	"Shoulder 1",
+	"Elbow",
+	"Pitch",
+	"Yaw",
+	"Roll",
+	"Gripper",
+	"Shoulder 2"
+};
+
+// Array associating joint names to corresponding Manipulator Motor IDs (array index)
+const std::string manipulatorJointNames[NUM_MANIPULATOR_MOTORS] =
+{
+	"Base",
+	"Shoulder",
+	"Elbow",
+	"Pitch",
+	"Yaw",
+	"Roll",
+	"Gripper"
 };
 
 // Array associating PWM pins to corresponding Manipulator Motor IDs (array index)
-const uint8_t manipulatorMotorPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+const uint8_t manipulatorMotorPins[NUM_MANIPULATOR_MOTORS] =
 {
 	17,
 	16,
@@ -106,7 +148,7 @@ const uint8_t manipulatorMotorPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
 };
 
 // Array associating PDP current measure channels to corresponding Manipulator Motor IDs (array index)
-const uint8_t manipulatorPowerChannels[ManipulatorMotors::NUM_MANIPULATOR_MOTORS+1] =
+const uint8_t manipulatorPowerChannels[NUM_MANIPULATOR_MOTORS+1] =
 {
 	0,
 	1,
@@ -119,63 +161,63 @@ const uint8_t manipulatorPowerChannels[ManipulatorMotors::NUM_MANIPULATOR_MOTORS
 };
 
 // Array associating potentiometer AI pins to corresponding Manipulator Motor IDs (array index)
-const uint8_t manipulatorPotentiometerPins[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+const uint8_t manipulatorPotentiometerPins[NUM_MANIPULATOR_MOTORS] =
 {
 	0,
 	1,
 	2,
 	3,
-	4,
-	5,
-	6
+	7,
+	6,
+	5
 };
 
 // Array associating potentiometer scaling value (covert to degrees) to corresponding Manipulator Motor IDs (array index)
-const double manipulatorPotentiometerScale[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+const float manipulatorPotentiometerScale[NUM_MANIPULATOR_MOTORS] =
 {
-	1.0,
-	1.0,
-	1.0,
-	1.0,
-	1.0,
-	1.0,
-	1.0
+	-240,
+	 240,
+	-240,
+	 240,
+	-240,
+	 240,
+	-240
 };
 
-// Array associating potentiometer offset value (in degrees) to corresponding Manipulator Motor IDs (array index)
-const double manipulatorPotentiometerOffset[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+// Array associating potentiometer offset value (reading when joint is at 0 degrees) to corresponding Manipulator Motor IDs (array index)
+const float manipulatorPotentiometerOffset[NUM_MANIPULATOR_MOTORS] =
 {
-	0.0,
-	0.0,
-	0.0,
-	0.0,
-	0.0,
-	0.0,
-	0.0
+	0.540,
+	0.830,
+	0.493,
+	0.470,
+	0.485,
+	0.460,
+	0.545
 };
 
 // Array associating joint limits (in degrees) to corresponding Manipulator Motor IDs (array index)
-const double manipulatorJointLimits[ManipulatorMotors::NUM_MANIPULATOR_MOTORS][2] =
+const float manipulatorJointLimits[NUM_MANIPULATOR_MOTORS][2] =
 {
-	{-65.0, 65.0}, // Hits hard stop at 70
-	{-65.0, 65.0}, // Hits hard stop at 70
-	{-140.0, 140.0}, // Hits hard stop at 147
-	{-140.0, 140.0}, // Hits hard stop at 146
-	{-135.0, 135.0}, // Hits hard stop at 140
-	{-140.0, 140.0}, // Hits hard stop at 146
-	{-50.0, 50.0} // Hits hard stop at 54
+	{-60, 60},   // Hard stop at 65
+	{-130, 0},   // Hard stop at 135
+	{-110, 110}, // Hard stop at 147
+	{-105, 105}, // Hard stop at 146
+	{-110, 110}, // Hard stop at 140
+	{-105, 105}, // Hard stop at 146
+	{-50, 50}    // Hard stop at 54
 };
 
 // Array associating stowed pose joint angles to corresponding Manipulator Motor IDs (array index)
-const double manipulatorPositionStow[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] =
+const float manipulatorPositionStow[NUM_MANIPULATOR_MOTORS] =
 {
-	0.0,
-	-65.0,
-	140.0,
-	0.0,
-	-135.0,
-	0.0,
-	0.0
+	 0,
+	 0,
+	-110,
+	 0,
+	-110,
+	 0,
+	 0
 };
 
 /**
@@ -184,7 +226,7 @@ const double manipulatorPositionStow[ManipulatorMotors::NUM_MANIPULATOR_MOTORS] 
  */
 inline uint32_t getTimestampMicros()
 {
-	return (uint32_t) (Timer::GetFPGATimestamp() * (double) 1000000);
+	return (uint32_t) (Timer::GetFPGATimestamp() * 1000000);
 }
 
 /**
@@ -213,6 +255,17 @@ inline float constrain(float n, float lower, float upper)
 inline float map(float x, float in_min, float in_max, float out_min, float out_max)
 {
 	return ((((x - in_min) * (out_max - out_min)) / (in_max - in_min)) + out_min);
+}
+
+/**
+ * Rounds a decimal value to given precision.
+ * @param x value to round
+ * @param p desired precision, eg. 0.01
+ * @return rounded value
+ */
+inline float round(float x, float p)
+{
+	return ((long)(x/p))*p;
 }
 
 #endif /* SRC_CONSTANTS_H_ */

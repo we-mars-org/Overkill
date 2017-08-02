@@ -1,0 +1,257 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="Roll Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="413" y="495"/>
+	</widget>
+	<widget field="Roll Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="398" y="474"/>
+	</widget>
+	<widget field="Roll Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="401" y="453"/>
+	</widget>
+	<widget field="Yaw Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="406" y="432"/>
+	</widget>
+	<widget field="Yaw Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="430" y="411"/>
+	</widget>
+	<widget field="Yaw Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="430" y="390"/>
+	</widget>
+	<widget field="Pitch Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="397" y="169"/>
+	</widget>
+	<widget field="Pitch Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="402" y="148"/>
+	</widget>
+	<widget field="Pitch Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="402" y="127"/>
+	</widget>
+	<widget field="Elbow Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="425" y="106"/>
+	</widget>
+	<widget field="Elbow Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="425" y="369"/>
+	</widget>
+	<widget field="Elbow Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="425" y="348"/>
+	</widget>
+	<widget field="Shoulder Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="425" y="327"/>
+	</widget>
+	<widget field="Shoulder Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="409" y="306"/>
+	</widget>
+	<widget field="Shoulder Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="397" y="285"/>
+	</widget>
+	<widget field="Base Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="425" y="85"/>
+	</widget>
+	<widget field="Base Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="425" y="264"/>
+	</widget>
+	<widget field="Base Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="425" y="243"/>
+	</widget>
+	<widget field="Gripper Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="410" y="64"/>
+	</widget>
+	<widget field="Gripper Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="410" y="222"/>
+	</widget>
+	<widget field="Gripper Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="410" y="201"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="0" y="0"/>
+	</static-widget>
+	<widget field="Gripper Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="505"/>
+	</widget>
+	<widget field="Roll Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="484"/>
+	</widget>
+	<widget field="Yaw Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="463"/>
+	</widget>
+	<widget field="Pitch Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="442"/>
+	</widget>
+	<widget field="Elbow Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="421"/>
+	</widget>
+	<widget field="Shoulder Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="211" y="400"/>
+	</widget>
+	<widget field="Base Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="211" y="379"/>
+	</widget>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.RobotPreferences">
+		<location x="584" y="0"/>
+	</static-widget>
+	<widget field="Gripper Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="397" y="42"/>
+	</widget>
+	<widget field="Roll Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="397" y="21"/>
+	</widget>
+	<widget field="Yaw Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="397" y="0"/>
+	</widget>
+	<widget field="Pitch Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="589"/>
+	</widget>
+	<widget field="Elbow Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="568"/>
+	</widget>
+	<widget field="Shoulder Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="547"/>
+	</widget>
+	<widget field="Base Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="201" y="526"/>
+	</widget>
+	<widget field="Left Middle Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
+		<location x="40" y="8"/>
+		<property name="Maximum" value="1.0"/>
+		<property name="Minimum" value="-1.0"/>
+	</widget>
+	<widget field="Turn Speed Input" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="311"/>
+	</widget>
+	<widget field="Right Front Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="38"/>
+	</widget>
+	<widget field="Shoulder 2 Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="357"/>
+	</widget>
+	<widget field="Shoulder 2 Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="336"/>
+	</widget>
+	<widget field="Gripper Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="315"/>
+	</widget>
+	<widget field="Gripper Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="294"/>
+	</widget>
+	<widget field="Roll Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="273"/>
+	</widget>
+	<widget field="Roll Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="252"/>
+	</widget>
+	<widget field="Yaw Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="231"/>
+	</widget>
+	<widget field="Yaw Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="210"/>
+	</widget>
+	<widget field="Pitch Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="189"/>
+	</widget>
+	<widget field="Pitch Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="168"/>
+	</widget>
+	<widget field="Elbow Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="147"/>
+	</widget>
+	<widget field="Elbow Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="126"/>
+	</widget>
+	<widget field="Shoulder 1 Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="105"/>
+	</widget>
+	<widget field="Shoulder 1 Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="84"/>
+	</widget>
+	<widget field="Base Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="63"/>
+	</widget>
+	<widget field="Base Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="42"/>
+	</widget>
+	<widget field="Left Rear Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="21"/>
+	</widget>
+	<widget field="Left Rear Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="212" y="0"/>
+	</widget>
+	<widget field="Left Middle Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="584"/>
+	</widget>
+	<widget field="Left Front Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="563"/>
+	</widget>
+	<widget field="Left Front Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="542"/>
+	</widget>
+	<widget field="Right Rear Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="521"/>
+	</widget>
+	<widget field="Right Rear Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="500"/>
+	</widget>
+	<widget field="Right Middle Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="479"/>
+	</widget>
+	<widget field="Right Middle Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="458"/>
+	</widget>
+	<widget field="Right Front Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="437"/>
+	</widget>
+	<widget field="Right Front Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="416"/>
+	</widget>
+	<widget field="Right Adjusted Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="395"/>
+	</widget>
+	<widget field="Left Adjusted Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="374"/>
+	</widget>
+	<widget field="Right Desired Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="353"/>
+	</widget>
+	<widget field="Left Desired Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="332"/>
+	</widget>
+	<widget field="Forward Speed Input" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="290"/>
+	</widget>
+	<widget field="Left Rear Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="269"/>
+	</widget>
+	<widget field="Left Rear Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="248"/>
+	</widget>
+	<widget field="Left Middle Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="227"/>
+	</widget>
+	<widget field="Left Middle Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="206"/>
+	</widget>
+	<widget field="Left Front Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="185"/>
+	</widget>
+	<widget field="Left Front Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="164"/>
+	</widget>
+	<widget field="Right Rear Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="143"/>
+	</widget>
+	<widget field="Right Rear Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="122"/>
+	</widget>
+	<widget field="Right Middle Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="101"/>
+	</widget>
+	<widget field="Right Middle Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="80"/>
+	</widget>
+	<widget field="Right Front Power Cap" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.FormattedField">
+		<location x="0" y="59"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+</xml>

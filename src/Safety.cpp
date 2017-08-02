@@ -19,10 +19,16 @@ void Safety::update()
 
 	lastRunTimestamp = timestampMicros;
 
+	// Get max current setting
+
+	float maxCurrent = map(joystick->GetRawAxis(CurrentLimit), 1, -1, maxCurrentLower, maxCurrentUpper);
+
+	// Test whether all motor currents are within limits
+
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
-		lastDriveCurrentVals[i] = (0.5 * lastDriveCurrentVals[i]) + 0.5 * pdp->GetCurrent(drivePowerChannels[i]);
-		if (lastDriveCurrentVals[i] > maxCurrent)
+		lastDriveCurrent[i] = (0.5 * lastDriveCurrent[i]) + 0.5 * pdp->GetCurrent(drivePowerChannels[i]);
+		if (lastDriveCurrent[i] > maxCurrent)
 		{
 			powerRelay->Set(0);
 			return;
@@ -30,8 +36,8 @@ void Safety::update()
 	}
 	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS+1; ++i)
 	{
-		lastManipulatorCurrentVals[i] = ((1-currentFilter) * lastManipulatorCurrentVals[i]) + currentFilter * pdp->GetCurrent(manipulatorPowerChannels[i]);
-		if (lastManipulatorCurrentVals[i] > maxCurrent)
+		lastManipulatorCurrent[i] = ((1-currentFilter) * lastManipulatorCurrent[i]) + currentFilter * pdp->GetCurrent(manipulatorPowerChannels[i]);
+		if (lastManipulatorCurrent[i] > maxCurrent)
 		{
 			powerRelay->Set(0);
 			return;
@@ -44,9 +50,9 @@ void Safety::update()
 void Safety::reset()
 {
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
-		lastDriveCurrentVals[i] = 0;
+		lastDriveCurrent[i] = 0;
 	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS+1; ++i)
-		lastManipulatorCurrentVals[i] = 0;
+		lastManipulatorCurrent[i] = 0;
 	lastRunTimestamp = getTimestampMicros() - safetyPeriod;
 }
 

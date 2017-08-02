@@ -35,22 +35,22 @@ class Drive
 		const float powerChangeMin = 0.005;
 
 		// Threshold value below which a power change will be ignored (power error value deadband)
-		const float powerChangeThresh = 0.001;
+		const float powerChangeThresh = 0.002;
 
 		// Maximum current value, upper and lower bounds, adjusted by throttle
-		const float maxCurrentLower = 10;
 		const float maxCurrentUpper = 15;
+		const float maxCurrentLower = 10;
 
-		// Current LPF parameter; 1 = fastest response, 0 = no update
+		// Current measurement LPF parameter; 1 = fastest response, 0 = no response
 		const float currentFilter = 0.6;
 
-		std::shared_ptr<Victor> motorControllers[DriveMotors::NUM_DRIVE_MOTORS];
-		std::shared_ptr<Encoder> encoders[DriveMotors::NUM_DRIVE_MOTORS];
+		std::shared_ptr<Victor> motorControllers[NUM_DRIVE_MOTORS];
+		std::shared_ptr<Encoder> encoders[NUM_DRIVE_MOTORS];
 
-		uint32_t lastEncoderVals[DriveMotors::NUM_DRIVE_MOTORS];
-		float lastPowerVals[DriveMotors::NUM_DRIVE_MOTORS];
-		float lastCurrentVals[DriveMotors::NUM_DRIVE_MOTORS];
-		float capPowerVals[DriveMotors::NUM_DRIVE_MOTORS];
+		uint32_t lastEncoder[NUM_DRIVE_MOTORS];
+		float lastPower[NUM_DRIVE_MOTORS];
+		float lastCurrent[NUM_DRIVE_MOTORS];
+		float capPower[NUM_DRIVE_MOTORS];
 
 		uint32_t lastRunTimestamp;
 		Joystick *joystick;
