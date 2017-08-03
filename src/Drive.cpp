@@ -39,8 +39,8 @@ void Drive::update()
 			capPower[i] += powerChangeMax/5;
 		capPower[i] = constrain(capPower[i], 0, 1);
 
-		SmartDashboard::PutNumber(driveMotorNames[i]+" Current", round(current, 0.1));
-		SmartDashboard::PutNumber(driveMotorNames[i]+" Power Cap", round(capPower[i], 0.01));
+		SmartDashboard::PutNumber(driveMotorNames[i]+" Current", 0.9*current/maxCurrent);
+		SmartDashboard::PutNumber(driveMotorNames[i]+" Power Cap", 0.9*capPower[i]);
 	}
 
 	// Calculate desired motor speeds from joystick input
@@ -53,13 +53,13 @@ void Drive::update()
 	if(!joystick->GetRawButton(DriveEnable))
 		forwardSpeed = turnSpeed = 0;
 
-	SmartDashboard::PutNumber("Forward Speed Input", round(forwardSpeed, 0.01));
-	SmartDashboard::PutNumber("Turn Speed Input", round(turnSpeed, 0.01));
+	SmartDashboard::PutNumber("Forward Speed Input", 0.9*forwardSpeed);
+	SmartDashboard::PutNumber("Turn Speed Input", 0.9*turnSpeed);
 
-	if(fabs(forwardSpeed) < 0.05)
+	if(fabs(forwardSpeed) < joystickDeadband)
 		forwardSpeed = 0;
 
-	if(fabs(turnSpeed) < 0.05)
+	if(fabs(turnSpeed) < joystickDeadband)
 		turnSpeed = 0;
 
 	float leftSpeed = constrain(forwardSpeed + turnSpeed, -1, 1);
@@ -76,8 +76,8 @@ void Drive::update()
 		rightSpeed = map(rightSpeed, -1, 1, -maxSpeed / 2, maxSpeed / 2);
 	}
 
-	SmartDashboard::PutNumber("Left Desired Speed", round(leftSpeed,1));
-	SmartDashboard::PutNumber("Right Desired Speed", round(rightSpeed,1));
+	SmartDashboard::PutNumber("Left Desired Speed", 0.9*leftSpeed/maxSpeed);
+	SmartDashboard::PutNumber("Right Desired Speed", 0.9*rightSpeed/maxSpeed);
 
 	// Calculate current motor speeds
 
@@ -89,7 +89,7 @@ void Drive::update()
 		motorSpeed[i] = encoderVal - lastEncoder[i];
 		lastEncoder[i] = encoderVal;
 
-		SmartDashboard::PutNumber(driveMotorNames[i]+" Speed", round(motorSpeed[i],1));
+		SmartDashboard::PutNumber(driveMotorNames[i]+" Speed", 0.9*motorSpeed[i]/maxSpeed);
 	}
 
 	// Perform motor saturation compensation by changing the desired speeds if a motor is saturated
@@ -122,12 +122,12 @@ void Drive::update()
 		rightSpeed *= ratio;
 	}
 
-	SmartDashboard::PutNumber("Left Adjusted Speed", round(leftSpeed,1));
-	SmartDashboard::PutNumber("Right Adjusted Speed", round(rightSpeed,1));
+	SmartDashboard::PutNumber("Left Adjusted Speed", 0.9*leftSpeed/maxSpeed);
+	SmartDashboard::PutNumber("Right Adjusted Speed", 0.9*rightSpeed/maxSpeed);
 
 	// Perform integral control to obtain desired motor speed
 
-	float speedError = 0, powerError = 0;
+	float speedError = 0;
 
 	for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i)
 	{
@@ -136,20 +136,11 @@ void Drive::update()
 		else
 			speedError = leftSpeed - motorSpeed[i];
 
-		powerError = speedError * kIntegral;
-
-		if(powerError > powerChangeThresh)
-			powerError = constrain(powerError, powerChangeMin, powerChangeMax);
-		else if(powerError < -powerChangeThresh)
-			powerError = constrain(powerError, -powerChangeMax, -powerChangeMin);
-		else
-			powerError = 0;
-
-		lastPower[i] += powerError;
+		lastPower[i] += constrain(speedError * kIntegral, -powerChangeMax, powerChangeMax);
 		lastPower[i] = constrain(lastPower[i], -(capPower[i] + 0.1), (capPower[i] + 0.1)); // Allow extra to see if motor is saturating
 		motorControllers[i]->Set(constrain(lastPower[i], -capPower[i], capPower[i]));
 
-		SmartDashboard::PutNumber(driveMotorNames[i]+" Power", round(lastPower[i],0.01));
+		SmartDashboard::PutNumber(driveMotorNames[i]+" Power", 0.9*lastPower[i]);
 	}
 }
 

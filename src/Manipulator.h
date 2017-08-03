@@ -46,12 +46,11 @@ class Manipulator
 		// Integral accumulator limit to control oscillations
 		const float kIntegralLimit = 0.2;
 
-		// Maximum and minimum steps by which the motor controller power can change by per cycle
-		const float powerChangeMax = 0.10;
-		const float powerChangeMin = 0.005;
+		// Maximum step by which the motor controller power can change by per cycle
+		const float powerChangeMax = 0.05;
 
-		// Threshold value below which a power change will be ignored (power error value deadband)
-		const float powerChangeThresh = 0.002;
+		// Deadband in degrees within which a position error will be accepted
+		const float errorDeadband = 0.5;
 
 		// Maximum current value, upper and lower bounds, adjusted by throttle
 		const float maxCurrentUpper = 15;

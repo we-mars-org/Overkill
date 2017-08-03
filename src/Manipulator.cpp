@@ -40,8 +40,8 @@ void Manipulator::update()
 			capPower[i] += powerChangeMax/5;
 		capPower[i] = constrain(capPower[i], 0, 1);
 
-		SmartDashboard::PutNumber(manipulatorMotorNames[i]+" Current", round(current,0.1));
-		SmartDashboard::PutNumber(manipulatorMotorNames[i]+" Power Cap", round(capPower[i],0.01));
+		SmartDashboard::PutNumber(manipulatorMotorNames[i]+" Current", 0.9*current/maxCurrent);
+		SmartDashboard::PutNumber(manipulatorMotorNames[i]+" Power Cap", 0.9*capPower[i]);
 	}
 	capPower[ShoulderMotor2] = capPower[ShoulderMotor1] = std::min(capPower[ShoulderMotor1], capPower[ShoulderMotor2]);
 
@@ -58,8 +58,8 @@ void Manipulator::update()
 		destPosition[i] = constrain(destPosition[i], manipulatorJointLimits[i][0], manipulatorJointLimits[i][1]);
 		jointPosition[i] = potentiometers[i]->Get();
 
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Target Angle",  round(destPosition[i],0.1));
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Current Angle", round(jointPosition[i],0.1));
+		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Target Angle",  0.9*map(destPosition[i],manipulatorJointLimits[i][0],manipulatorJointLimits[i][1],-1,1));
+		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Current Angle", 0.9*map(jointPosition[i],manipulatorJointLimits[i][0],manipulatorJointLimits[i][1],-1,1));
 	}
 
 	// Calculate the trajectory from current position to the target position
@@ -71,7 +71,7 @@ void Manipulator::update()
 		for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
 		{
 			travelAngle = destPosition[i] - trackPosition[i];
-			if(travelAngle > 0)
+			if(travelAngle > errorDeadband/2) // need to move in forward direction, positive speed
 			{
 				capSpeed = std::sqrt(2*maxAccel*travelAngle); // This allows us to slow down as we approach target
 				capSpeed = std::min(capSpeed, maxSpeed);
@@ -81,7 +81,7 @@ void Manipulator::update()
 					lastSpeed[i] = capSpeed;
 
 			}
-			else if(travelAngle < 0)
+			else if(travelAngle < -errorDeadband/2) // need to move in reverse direction, negative speed
 			{
 				travelAngle = -travelAngle;
 				capSpeed = std::sqrt(2*maxAccel*travelAngle); // This allows us to slow down as we approach target
@@ -91,6 +91,9 @@ void Manipulator::update()
 				else // If need to go slower, clamp down to capSpeed
 					lastSpeed[i] = capSpeed;
 			}
+			else
+				lastSpeed[i] = 0;
+			lastSpeed[i] = constrain(lastSpeed[i], -maxSpeed, maxSpeed);
 			trackPosition[i] += lastSpeed[i];
 		}
 	}
@@ -104,30 +107,29 @@ void Manipulator::update()
 
 	// Perform proportional-integral control to obtain desired motor position
 
-	float positionError = 0, powerError = 0;
+	float positionError = 0, powerChange = 0;
 
 	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
 	{
 		trackPosition[i] = constrain(trackPosition[i], manipulatorJointLimits[i][0], manipulatorJointLimits[i][1]);
 		positionError = trackPosition[i] - jointPosition[i];
+
+		if(fabs(positionError) < errorDeadband)
+			positionError = 0;
+
 		integralAccumulator[i] += positionError * kIntegral[i];
 		integralAccumulator[i] = constrain(integralAccumulator[i], -kIntegralLimit, kIntegralLimit);
-		powerError = (positionError * kProportional[i]) + integralAccumulator[i] - lastPower[i] ;
 
-		if(powerError > powerChangeThresh)
-			powerError = constrain(powerError, powerChangeMin, powerChangeMax);
-		else if(powerError < -powerChangeThresh)
-			powerError = constrain(powerError, -powerChangeMax, -powerChangeMin);
-		else
-			powerError = 0;
+		powerChange = (positionError * kProportional[i]) + integralAccumulator[i] - lastPower[i];
+		powerChange = constrain(powerChange, -powerChangeMax, powerChangeMax);
 
-		lastPower[i] += powerError;
+		lastPower[i] += powerChange;
 		lastPower[i] = constrain(lastPower[i], -(capPower[i] + 0.1), (capPower[i] + 0.1)); // Allow extra to see if motor is saturating
 		motorControllers[i]->Set(constrain(lastPower[i], -capPower[i], capPower[i]));
 
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Track Angle",  round(trackPosition[i],0.1));
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Track Speed",  round(lastSpeed[i],0.01));
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Power", round(lastPower[i],0.01));
+		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Track Angle", 0.9*map(trackPosition[i],manipulatorJointLimits[i][0],manipulatorJointLimits[i][1],-1,1));
+		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Track Speed", 0.9*lastSpeed[i]/maxSpeed);
+		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Power", 0.9*lastPower[i]);
 	}
 }
 
