@@ -1,6 +1,6 @@
 #include <Drive.h>
 
-Drive::Drive(Joystick *controller, PowerDistributionPanel *pdpanel)
+Drive::Drive(Joystick *controller, Safety *safe)
 {
 	for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i)
 	{
@@ -9,7 +9,7 @@ Drive::Drive(Joystick *controller, PowerDistributionPanel *pdpanel)
 	}
 
 	this->joystick = controller;
-	this->pdp = pdpanel;
+	this->safety = safe;
 	reset();
 }
 
@@ -31,11 +31,10 @@ void Drive::update()
 	float current = 0;
 	for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i)
 	{
-		current = pdp->GetCurrent(drivePowerChannels[i]);
-		lastCurrent[i] = ((1-currentFilter) * lastCurrent[i]) + currentFilter * current;
-		if(lastCurrent[i] > maxCurrent)
+		current = safety->getDriveCurrent(i);
+		if(current > maxCurrent)
 			capPower[i] -= powerChangeMax;
-		else if(lastCurrent[i] < (maxCurrent-1))
+		else if(current < (maxCurrent-1))
 			capPower[i] += powerChangeMax/5;
 		capPower[i] = constrain(capPower[i], 0, 1);
 
@@ -151,7 +150,6 @@ void Drive::reset()
 		motorControllers[i]->Set(0);
 		lastEncoder[i] = encoders[i]->GetRaw();
 		lastPower[i] = 0;
-		lastCurrent[i] = 0;
 		capPower[i] = 0;
 	}
 	lastRunTimestamp = getTimestampMicros() - drivePeriod;

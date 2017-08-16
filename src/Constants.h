@@ -10,14 +10,14 @@
 
 #include <WPILib.h>
 
+// Safety loop run period in microseconds (unit is microseconds per cycle)
+const uint32_t safetyPeriod = 100 * 1000;
+
 // Drive loop run period in microseconds (unit is microseconds per cycle)
 const uint32_t drivePeriod = 50 * 1000;
 
 // Manipulator loop run period in microseconds (unit is microseconds per cycle)
 const uint32_t manipulatorPeriod = 25 * 1000;
-
-// Safety loop run period in microseconds (unit is microseconds per cycle)
-const uint32_t safetyPeriod = 100 * 1000;
 
 // Relay DIO pin number: high keeps relay on, low turns it off
 const uint8_t relayPin = 25;
@@ -255,17 +255,6 @@ inline float constrain(float n, float lower, float upper)
 inline float map(float x, float in_min, float in_max, float out_min, float out_max)
 {
 	return ((((x - in_min) * (out_max - out_min)) / (in_max - in_min)) + out_min);
-}
-
-/**
- * Rounds a decimal value to given precision.
- * @param x value to round
- * @param p desired precision, eg. 0.01
- * @return rounded value
- */
-inline float round(float x, float p)
-{
-	return ((long)(x/p))*p;
 }
 
 #endif /* SRC_CONSTANTS_H_ */

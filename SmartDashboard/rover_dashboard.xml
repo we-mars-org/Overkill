@@ -5,126 +5,126 @@
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Turn Speed Input" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="15"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Desired Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="75"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Right Desired Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="75"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Adjusted Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="105"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Right Adjusted Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="105"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Front Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="165"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Right Front Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="165"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Middle Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="195"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Right Middle Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="195"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Rear Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="225"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Right Rear Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="225"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Front Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="285"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Right Front Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="285"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Middle Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="315"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Right Middle Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="315"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Rear Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="345"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Right Rear Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="180" y="345"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Left Front Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="15" y="405"/>
@@ -203,245 +203,245 @@
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Shoulder Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="45"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Elbow Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="75"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Pitch Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="105"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Yaw Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="135"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Roll Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="165"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Gripper Target Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="195"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Base Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="565" y="15"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Shoulder Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="565" y="45"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Elbow Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="565" y="75"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Pitch Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="565" y="105"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Yaw Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="565" y="135"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Roll Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="565" y="165"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Gripper Track Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="565" y="195"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Base Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="730" y="15"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Shoulder Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="730" y="45"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Elbow Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="730" y="75"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Pitch Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="730" y="105"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Yaw Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="730" y="135"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Roll Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="730" y="165"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Gripper Current Angle" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="730" y="195"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Base Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="895" y="15"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Shoulder Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="895" y="45"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Elbow Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="895" y="75"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Pitch Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="895" y="105"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Yaw Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="895" y="135"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Roll Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="895" y="165"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Gripper Track Speed" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="895" y="195"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Base Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="255"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Shoulder Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="285"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Elbow Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="345"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Pitch Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="375"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Yaw Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="405"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Roll Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="435"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Gripper Power" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="400" y="465"/>
 		<width>150</width>
 		<height>30</height>
 		<property name="Maximum" value="1.0"/>
-		<property name="Minimum" value="-1.0"/>
+		<property name="Minimum" value="-1.1"/>
 	</widget>
 	<widget field="Base Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.ProgressBar">
 		<location x="565" y="255"/>

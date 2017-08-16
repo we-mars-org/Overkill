@@ -2,6 +2,7 @@
 #define SRC_DRIVE_H_
 
 #include <Constants.h>
+#include <Safety.h>
 
 /*
  * Encoder counts per revolution = 7
@@ -19,7 +20,7 @@
 class Drive
 {
 	public:
-		Drive(Joystick *controller, PowerDistributionPanel *pdpanel);
+		Drive(Joystick *controller, Safety *safe);
 		void update();
 		void reset();
 
@@ -40,20 +41,16 @@ class Drive
 		const float maxCurrentUpper = 15;
 		const float maxCurrentLower = 10;
 
-		// Current measurement LPF parameter; 1 = fastest response, 0 = no response
-		const float currentFilter = 0.6;
-
 		std::shared_ptr<Victor> motorControllers[NUM_DRIVE_MOTORS];
 		std::shared_ptr<Encoder> encoders[NUM_DRIVE_MOTORS];
 
 		uint32_t lastEncoder[NUM_DRIVE_MOTORS];
 		float lastPower[NUM_DRIVE_MOTORS];
-		float lastCurrent[NUM_DRIVE_MOTORS];
 		float capPower[NUM_DRIVE_MOTORS];
 
 		uint32_t lastRunTimestamp;
 		Joystick *joystick;
-		PowerDistributionPanel *pdp;
+		Safety *safety;
 };
 
 #endif /* SRC_DRIVE_H_ */

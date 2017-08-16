@@ -1,7 +1,7 @@
 #include <Constants.h>
+#include <Safety.h>
 #include <Drive.h>
 #include <Manipulator.h>
-#include <Safety.h>
 
 //FRC Code: M82X12516
 
@@ -10,22 +10,25 @@ class Robot: public SampleRobot
 private:
 	Joystick joystick;
 	PowerDistributionPanel pdp;
+	Safety safety;
 	Drive drive;
 	Manipulator manipulator;
-	Safety safety;
 
 public:
 	Robot() :
 			joystick(0),
 			pdp(),
-			drive(&joystick, &pdp),
-			manipulator(&joystick, &pdp),
-			safety(&joystick, &pdp)
+			safety(&joystick, &pdp),
+			drive(&joystick, &safety),
+			manipulator(&joystick, &safety)
 	{
 	}
 
 	void RobotInit()
 	{
+		safety.reset();
+		drive.reset();
+		manipulator.reset();
 	}
 
 	void Disabled()

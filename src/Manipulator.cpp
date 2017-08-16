@@ -1,6 +1,6 @@
 #include <Manipulator.h>
 
-Manipulator::Manipulator(Joystick *controller, PowerDistributionPanel *pdpanel)
+Manipulator::Manipulator(Joystick *controller, Safety *safe)
 {
 	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
 	{
@@ -10,7 +10,7 @@ Manipulator::Manipulator(Joystick *controller, PowerDistributionPanel *pdpanel)
 	}
 
 	this->joystick = controller;
-	this->pdp = pdpanel;
+	this->safety = safe;
 	this->perfs = Preferences::GetInstance();
 	reset();
 }
@@ -32,11 +32,10 @@ void Manipulator::update()
 
 	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS+1; ++i)
 	{
-		float current = pdp->GetCurrent(manipulatorPowerChannels[i]);
-		lastCurrent[i] = ((1-currentFilter) * lastCurrent[i]) + currentFilter * current;
-		if(lastCurrent[i] > maxCurrent)
+		float current = safety->getManipulatorCurrent(i);
+		if(current > maxCurrent)
 			capPower[i] -= powerChangeMax;
-		else if(lastCurrent[i] < (maxCurrent-1))
+		else if(current < (maxCurrent-1))
 			capPower[i] += powerChangeMax/5;
 		capPower[i] = constrain(capPower[i], 0, 1);
 
@@ -146,9 +145,7 @@ void Manipulator::reset()
 		perfs->PutDouble(manipulatorJointNames[i]+" Desired Angle", manipulatorPositionStow[i]);
 	}
 	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS+1; ++i)
-	{
-		lastCurrent[i] = 0;
 		capPower[i] = 0;
-	}
+
 	lastRunTimestamp = getTimestampMicros() - manipulatorPeriod;
 }

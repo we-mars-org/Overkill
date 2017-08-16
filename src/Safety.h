@@ -9,6 +9,8 @@ class Safety
 		Safety(Joystick *controller, PowerDistributionPanel *pdpanel);
 		void update();
 		void reset();
+		float getDriveCurrent(unsigned ch) { return (ch < NUM_DRIVE_MOTORS) ? lastDriveControlCurrent[ch] : 0; }
+		float getManipulatorCurrent(unsigned ch) { return (ch < NUM_MANIPULATOR_MOTORS+1) ? lastManipulatorControlCurrent[ch] : 0; }
 
 	private:
 		// Maximum current that any motor is allowed to reach to, upper and lower bounds, adjusted by throttle
@@ -18,10 +20,14 @@ class Safety
 		const float maxCurrentLower = 15;
 
 		// Current measurement LPF parameter; 1 = fastest response, 0 = no response
-		const float currentFilter = 0.4;
+		const float currentSafetyFilter = 0.2;
+		const float currentControlFilter = 0.7;
 
-		float lastDriveCurrent[DriveMotors::NUM_DRIVE_MOTORS];
-		float lastManipulatorCurrent[ManipulatorMotors::NUM_MANIPULATOR_MOTORS+1];
+		float lastDriveSafetyCurrent[NUM_DRIVE_MOTORS];
+		float lastManipulatorSafetyCurrent[NUM_MANIPULATOR_MOTORS+1];
+
+		float lastDriveControlCurrent[NUM_DRIVE_MOTORS];
+		float lastManipulatorControlCurrent[NUM_MANIPULATOR_MOTORS+1];
 
 		std::shared_ptr<DigitalOutput> powerRelay;
 		uint32_t lastRunTimestamp;

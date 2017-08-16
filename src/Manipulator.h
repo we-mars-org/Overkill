@@ -2,11 +2,12 @@
 #define SRC_MANIPULATOR_H_
 
 #include <Constants.h>
+#include <Safety.h>
 
 class Manipulator
 {
 	public:
-		Manipulator(Joystick *controller, PowerDistributionPanel *pdp);
+		Manipulator(Joystick *controller, Safety *safe);
 		void update();
 		void reset();
 
@@ -22,32 +23,32 @@ class Manipulator
 		// Proportional constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kProportional[NUM_MANIPULATOR_MOTORS] =
 		{
-			0.03,
-			0.03,
-			0.03,
-			0.03,
-			0.03,
-			0.03,
-			0.03
+			0.02,
+			0.02,
+			0.02,
+			0.02,
+			0.02,
+			0.02,
+			0.02
 		};
 
 		// Integral constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kIntegral[NUM_MANIPULATOR_MOTORS] =
 		{
-			0.001,
-			0.001,
-			0.001,
-			0.001,
-			0.001,
-			0.001,
-			0.001
+			0.00000,
+			0.00000,
+			0.00000,
+			0.00000,
+			0.00000,
+			0.00000,
+			0.00000
 		};
 
 		// Integral accumulator limit to control oscillations
-		const float kIntegralLimit = 0.2;
+		const float kIntegralLimit = 0.1;
 
 		// Maximum step by which the motor controller power can change by per cycle
-		const float powerChangeMax = 0.05;
+		const float powerChangeMax = 0.1;
 
 		// Deadband in degrees within which a position error will be accepted
 		const float errorDeadband = 0.5;
@@ -55,9 +56,6 @@ class Manipulator
 		// Maximum current value, upper and lower bounds, adjusted by throttle
 		const float maxCurrentUpper = 15;
 		const float maxCurrentLower = 10;
-
-		// Current measurement LPF parameter; 1 = fastest response, 0 = no response
-		const float currentFilter = 0.6;
 
 		std::shared_ptr<Victor> motorControllers[NUM_MANIPULATOR_MOTORS];
 		std::shared_ptr<AnalogPotentiometer> potentiometers[NUM_MANIPULATOR_MOTORS];
@@ -68,12 +66,11 @@ class Manipulator
 		float lastSpeed[NUM_MANIPULATOR_MOTORS];
 		float lastPower[NUM_MANIPULATOR_MOTORS];
 		float integralAccumulator[NUM_MANIPULATOR_MOTORS];
-		float lastCurrent[NUM_MANIPULATOR_MOTORS+1];
 		float capPower[NUM_MANIPULATOR_MOTORS+1];
 
 		uint32_t lastRunTimestamp;
 		Joystick *joystick;
-		PowerDistributionPanel *pdp;
+		Safety *safety;
 		Preferences *perfs;
 };
 

@@ -22,13 +22,17 @@ void Safety::update()
 	// Get max current setting
 
 	float maxCurrent = map(joystick->GetRawAxis(CurrentLimit), 1, -1, maxCurrentLower, maxCurrentUpper);
+	float current = 0;
 
 	// Test whether all motor currents are within limits
 
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
 	{
-		lastDriveCurrent[i] = (0.5 * lastDriveCurrent[i]) + 0.5 * pdp->GetCurrent(drivePowerChannels[i]);
-		if (lastDriveCurrent[i] > maxCurrent)
+		current = (float)(pdp->GetCurrent(drivePowerChannels[i]));
+		lastDriveSafetyCurrent[i] = ((1-currentSafetyFilter) * lastDriveSafetyCurrent[i]) + currentSafetyFilter * current;
+		lastDriveControlCurrent[i] = ((1-currentControlFilter) * lastDriveControlCurrent[i]) + currentControlFilter * current;
+
+		if (lastDriveSafetyCurrent[i] > maxCurrent)
 		{
 			powerRelay->Set(0);
 			return;
@@ -36,8 +40,11 @@ void Safety::update()
 	}
 	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS+1; ++i)
 	{
-		lastManipulatorCurrent[i] = ((1-currentFilter) * lastManipulatorCurrent[i]) + currentFilter * pdp->GetCurrent(manipulatorPowerChannels[i]);
-		if (lastManipulatorCurrent[i] > maxCurrent)
+		current = (float)(pdp->GetCurrent(manipulatorPowerChannels[i]));
+		lastManipulatorSafetyCurrent[i] = ((1-currentSafetyFilter) * lastManipulatorSafetyCurrent[i]) + currentSafetyFilter * current;
+		lastManipulatorControlCurrent[i] = ((1-currentControlFilter) * lastManipulatorControlCurrent[i]) + currentControlFilter * current;
+
+		if (lastManipulatorSafetyCurrent[i] > maxCurrent)
 		{
 			powerRelay->Set(0);
 			return;
@@ -50,9 +57,15 @@ void Safety::update()
 void Safety::reset()
 {
 	for(unsigned i = 0; i < DriveMotors::NUM_DRIVE_MOTORS; ++i)
-		lastDriveCurrent[i] = 0;
+	{
+		lastDriveSafetyCurrent[i] = 0;
+		lastDriveControlCurrent[i] = 0;
+	}
 	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS+1; ++i)
-		lastManipulatorCurrent[i] = 0;
+	{
+		lastManipulatorSafetyCurrent[i] = 0;
+		lastManipulatorControlCurrent[i] = 0;
+	}
 	lastRunTimestamp = getTimestampMicros() - safetyPeriod;
 }
 
