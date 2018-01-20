@@ -1,7 +1,7 @@
 #define NUM_BUTTONS 6
 #define NUM_AXES 8
 
-int buttonPins[NUM_BUTTONS] = {1,2,3,4,5,6};
+int buttonPins[NUM_BUTTONS] = {2,3,4,5,6,7};
 int axisPins[NUM_AXES] = {A0,A1,A2,A3,A4,A5,A6,A8};
 
 void setup() {
