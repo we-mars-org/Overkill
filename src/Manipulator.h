@@ -15,10 +15,10 @@ class Manipulator
 
 	private:
 		// Maximum joint angle velocity (in degrees per second times manipulatorPeriod in seconds/cycle)
-		const float maxSpeed = 100.0 * ((float)manipulatorPeriod / 1000000.0);
+		const float maxSpeed = 40.0 * ((float)manipulatorPeriod / 1000000.0);
 
 		// Maximum joint angle acceleration (in degrees per second squared times manipulatorPeriod in seconds/cycle squared)
-		const float maxAccel = 100.0 * ((float)manipulatorPeriod / 1000000.0) * ((float)manipulatorPeriod / 1000000.0);
+		const float maxAccel = 40.0 * ((float)manipulatorPeriod / 1000000.0) * ((float)manipulatorPeriod / 1000000.0);
 
 		// Proportional constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kProportional[NUM_MANIPULATOR_MOTORS] =
@@ -35,13 +35,13 @@ class Manipulator
 		// Integral constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kIntegral[NUM_MANIPULATOR_MOTORS] =
 		{
-			0.00000,
-			0.00000,
-			0.00000,
-			0.00000,
-			0.00000,
-			0.00000,
-			0.00000
+			0.0000,
+			0.0000,
+			0.0000,
+			0.0000,
+			0.0000,
+			0.0000,
+			0.0000
 		};
 
 		// Integral accumulator limit to control oscillations

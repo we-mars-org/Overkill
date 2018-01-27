@@ -188,7 +188,7 @@ const float manipulatorPotentiometerScale[NUM_MANIPULATOR_MOTORS] =
 const float manipulatorPotentiometerOffset[NUM_MANIPULATOR_MOTORS] =
 {
 	0.540,
-	0.830,
+	0.700,
 	0.493,
 	0.470,
 	0.485,
@@ -213,9 +213,9 @@ const float manipulatorPositionStow[NUM_MANIPULATOR_MOTORS] =
 {
 	 0,
 	 0,
-	-110,
+	 110,
 	 0,
-	-110,
+	 110,
 	 0,
 	 0
 };
