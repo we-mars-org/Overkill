@@ -35,23 +35,24 @@ class Manipulator
 		// Integral constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kIntegral[NUM_MANIPULATOR_MOTORS] =
 		{
-			0.0000,
-			0.0000,
-			0.0000,
-			0.0000,
-			0.0000,
-			0.0000,
-			0.0000
+			0.00001,
+			0.00001,
+			0.00001,
+			0.00001,
+			0.00001,
+			0.00001,
+			0.00001
 		};
 
 		// Integral accumulator limit to control oscillations
 		const float kIntegralLimit = 0.1;
+		const float kIntegralStepLimit = 0.0005;
 
 		// Maximum step by which the motor controller power can change by per cycle
-		const float powerChangeMax = 0.1;
+		const float powerChangeMax = 0.03;
 
 		// Deadband in degrees within which a position error will be accepted
-		const float errorDeadband = 0.5;
+		const float errorDeadband = 1.0;
 
 		// Maximum current value, upper and lower bounds, adjusted by throttle
 		const float maxCurrentUpper = 15;

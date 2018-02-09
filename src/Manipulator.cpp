@@ -116,7 +116,7 @@ void Manipulator::update()
 		if(fabs(positionError) < errorDeadband)
 			positionError = 0;
 
-		integralAccumulator[i] += positionError * kIntegral[i];
+		integralAccumulator[i] += constrain(positionError * kIntegral[i], -kIntegralStepLimit, kIntegralStepLimit);
 		integralAccumulator[i] = constrain(integralAccumulator[i], -kIntegralLimit, kIntegralLimit);
 
 		powerChange = (positionError * kProportional[i]) + integralAccumulator[i] - lastPower[i];
