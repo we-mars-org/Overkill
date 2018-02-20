@@ -8,7 +8,8 @@
 class Robot: public SampleRobot
 {
 private:
-	Joystick joystick;
+	Joystick joystickDrive;
+	Joystick joystickManipulator;
 	PowerDistributionPanel pdp;
 	Safety safety;
 	Drive drive;
@@ -16,11 +17,12 @@ private:
 
 public:
 	Robot() :
-			joystick(0),
+			joystickDrive(0),
+			joystickManipulator(1),
 			pdp(),
-			safety(&joystick, &pdp),
-			drive(&joystick, &safety),
-			manipulator(&joystick, &safety)
+			safety(&joystickDrive, &joystickManipulator, &pdp),
+			drive(&joystickDrive, &safety),
+			manipulator(&joystickManipulator, &safety)
 	{
 	}
 

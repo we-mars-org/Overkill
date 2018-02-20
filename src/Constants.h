@@ -1,10 +1,7 @@
 #ifndef SRC_CONSTANTS_H_
 #define SRC_CONSTANTS_H_
 
-#include <cstdint>
-#include <memory>
-#include <cmath>
-#include <algorithm>
+#include <math.h>
 #include <string>
 #include <iostream>
 
@@ -25,19 +22,30 @@ const uint8_t relayPin = 25;
 // Assign names to Joystick axes
 enum JoystickAxes
 {
+	// On both joysticks
+	CurrentLimit = 0,
+	// On drive joystick (id: 0)
 	DriveForward = 1,
-	DriveTurn = 0,
-	CurrentLimit = 2
+	DriveTurn = 2,
+	 // On manipulator joystick (id: 1)
+	BasePosition = 1,
+	ShoulderPosition = 2,
+	ElbowPosition = 3,
+	PitchPosition = 4,
+	YawPosition = 5,
+	RollPosition = 6,
+	GripperPosition = 7
 };
 
 // Assign names to Joystick buttons
 enum JoystickButtons
 {
+	// On drive joystick (id: 0)
 	DriveEnable = 1,
-	DriveFullSpeed = 2,
-	DriveOverride = 3,
-	ManipulatorControllable = 4,
-	ManipulatorEnable = 5
+	DriveOverride = 2,
+	// On manipulator joystick (id: 1)
+	ManipulatorEnable = 1,
+	ManipulatorControllable = 2
 };
 
 // Assign IDs to Drive Motors for use with other const arrays defined below
@@ -107,11 +115,24 @@ enum ManipulatorMotors
 	RollMotor,
 	GripperMotor,
 	ShoulderMotor2,
-	NUM_MANIPULATOR_MOTORS = ShoulderMotor2
+	NUM_MANIPULATOR_MOTORS
+};
+
+// Assign IDs to Manipulator Joints for use with other const arrays defined below
+enum ManipulatorJoints
+{
+	BaseJoint = 0,
+	ShoulderJoint,
+	ElbowJoint,
+	PitchJoint,
+	YawJoint,
+	RollJoint,
+	GripperJoint,
+	NUM_MANIPULATOR_JOINTS
 };
 
 // Array associating motor names to corresponding Manipulator Motor IDs (array index)
-const std::string manipulatorMotorNames[NUM_MANIPULATOR_MOTORS+1] =
+const std::string manipulatorMotorNames[NUM_MANIPULATOR_MOTORS] =
 {
 	"Base",
 	"Shoulder 1",
@@ -124,7 +145,7 @@ const std::string manipulatorMotorNames[NUM_MANIPULATOR_MOTORS+1] =
 };
 
 // Array associating joint names to corresponding Manipulator Motor IDs (array index)
-const std::string manipulatorJointNames[NUM_MANIPULATOR_MOTORS] =
+const std::string manipulatorJointNames[NUM_MANIPULATOR_JOINTS] =
 {
 	"Base",
 	"Shoulder",
@@ -136,7 +157,7 @@ const std::string manipulatorJointNames[NUM_MANIPULATOR_MOTORS] =
 };
 
 // Array associating PWM pins to corresponding Manipulator Motor IDs (array index)
-const uint8_t manipulatorMotorPins[NUM_MANIPULATOR_MOTORS] =
+const uint8_t manipulatorMotorPins[NUM_MANIPULATOR_JOINTS] =
 {
 	17,
 	16,
@@ -148,7 +169,7 @@ const uint8_t manipulatorMotorPins[NUM_MANIPULATOR_MOTORS] =
 };
 
 // Array associating PDP current measure channels to corresponding Manipulator Motor IDs (array index)
-const uint8_t manipulatorPowerChannels[NUM_MANIPULATOR_MOTORS+1] =
+const uint8_t manipulatorPowerChannels[NUM_MANIPULATOR_MOTORS] =
 {
 	0,
 	1,
@@ -161,7 +182,7 @@ const uint8_t manipulatorPowerChannels[NUM_MANIPULATOR_MOTORS+1] =
 };
 
 // Array associating potentiometer AI pins to corresponding Manipulator Motor IDs (array index)
-const uint8_t manipulatorPotentiometerPins[NUM_MANIPULATOR_MOTORS] =
+const uint8_t manipulatorPotentiometerPins[NUM_MANIPULATOR_JOINTS] =
 {
 	0,
 	1,
@@ -173,7 +194,7 @@ const uint8_t manipulatorPotentiometerPins[NUM_MANIPULATOR_MOTORS] =
 };
 
 // Array associating potentiometer scaling value (covert to degrees) to corresponding Manipulator Motor IDs (array index)
-const float manipulatorPotentiometerScale[NUM_MANIPULATOR_MOTORS] =
+const float manipulatorPotentiometerScale[NUM_MANIPULATOR_JOINTS] =
 {
 	-240,
 	 240,
@@ -185,10 +206,10 @@ const float manipulatorPotentiometerScale[NUM_MANIPULATOR_MOTORS] =
 };
 
 // Array associating potentiometer offset value (reading when joint is at 0 degrees) to corresponding Manipulator Motor IDs (array index)
-const float manipulatorPotentiometerOffset[NUM_MANIPULATOR_MOTORS] =
+const float manipulatorPotentiometerOffset[NUM_MANIPULATOR_JOINTS] =
 {
 	0.540,
-	0.700,
+	0.325,
 	0.493,
 	0.470,
 	0.485,
@@ -197,10 +218,10 @@ const float manipulatorPotentiometerOffset[NUM_MANIPULATOR_MOTORS] =
 };
 
 // Array associating joint limits (in degrees) to corresponding Manipulator Motor IDs (array index)
-const float manipulatorJointLimits[NUM_MANIPULATOR_MOTORS][2] =
+const float manipulatorJointLimits[NUM_MANIPULATOR_JOINTS][2] =
 {
 	{-60, 60},   // Hard stop at 65
-	{-130, 0},   // Hard stop at 135
+	{-40, 90},   // Hard stop at 45 & 95
 	{-110, 110}, // Hard stop at 147
 	{-105, 105}, // Hard stop at 146
 	{-110, 110}, // Hard stop at 140
@@ -209,13 +230,13 @@ const float manipulatorJointLimits[NUM_MANIPULATOR_MOTORS][2] =
 };
 
 // Array associating stowed pose joint angles to corresponding Manipulator Motor IDs (array index)
-const float manipulatorPositionStow[NUM_MANIPULATOR_MOTORS] =
+const float manipulatorPositionStow[NUM_MANIPULATOR_JOINTS] =
 {
 	 0,
 	 0,
-	 110,
+	 0,//110,
 	 0,
-	 110,
+	 0,//110,
 	 0,
 	 0
 };
@@ -238,8 +259,8 @@ inline uint32_t getTimestampMicros()
  */
 inline float constrain(float n, float lower, float upper)
 {
-	if (n > upper) n = upper;
-	if (n < lower) n = lower;
+	if (n > upper) return upper;
+	if (n < lower) return lower;
 	return n;
 }
 
@@ -255,6 +276,21 @@ inline float constrain(float n, float lower, float upper)
 inline float map(float x, float in_min, float in_max, float out_min, float out_max)
 {
 	return ((((x - in_min) * (out_max - out_min)) / (in_max - in_min)) + out_min);
+}
+
+/**
+ * Convert a floating point number in range -1.0 > 0.0 > 1.0 to a string in range "-99" > "+00" > "+99"
+ * @param x value to convert (range -1.0 to 1.0)
+ * @return three character (sign + 2 digits) string representation of x
+ */
+inline std::string numToString(float x)
+{
+	int n = (int)(x * 100 + 0.5);
+	if (n > 99) n = 99;
+	if (n < -99) n = -99;
+	std::string sign = "+";
+	if(n < 0) { sign = "-"; n = -n; }
+	return sign + (char)((int)(n/10)+'0') + (char)((int)(n%10)+'0');
 }
 
 #endif /* SRC_CONSTANTS_H_ */

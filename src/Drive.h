@@ -28,9 +28,6 @@ class Drive
 		// Maximum drive motor velocity in encoder counts per loop period (refer to calculation above)
 		const float maxSpeed = (float)(2400 * drivePeriod / 1000000); // drivePeriod is in microseconds per period
 
-		// Deadband within which the joystick axes input is ignored
-		const float joystickDeadband = 0.05;
-
 		// Integral constant for drive speed control (tuned for balanced acceleration and deceleration)
 		const float kIntegral = 0.002;
 

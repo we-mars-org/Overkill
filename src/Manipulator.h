@@ -15,64 +15,56 @@ class Manipulator
 
 	private:
 		// Maximum joint angle velocity (in degrees per second times manipulatorPeriod in seconds/cycle)
-		const float maxSpeed = 40.0 * ((float)manipulatorPeriod / 1000000.0);
+		const float maxSpeed = 50.0 * ((float)manipulatorPeriod / 1000000.0);
 
 		// Maximum joint angle acceleration (in degrees per second squared times manipulatorPeriod in seconds/cycle squared)
-		const float maxAccel = 40.0 * ((float)manipulatorPeriod / 1000000.0) * ((float)manipulatorPeriod / 1000000.0);
+		const float maxAccel = 50.0 * ((float)manipulatorPeriod / 1000000.0) * ((float)manipulatorPeriod / 1000000.0);
 
 		// Proportional constants for manipulator position control (tuned for balanced acceleration and deceleration)
-		const float kProportional[NUM_MANIPULATOR_MOTORS] =
+		const float kProportional[NUM_MANIPULATOR_JOINTS] =
 		{
-			0.02,
-			0.02,
-			0.02,
-			0.02,
-			0.02,
-			0.02,
-			0.02
+			0.03,
+			0.03,
+			0.03,
+			0.03,
+			0.03,
+			0.03,
+			0.03
 		};
 
-		// Integral constants for manipulator position control (tuned for balanced acceleration and deceleration)
-		const float kIntegral[NUM_MANIPULATOR_MOTORS] =
+		// Derivative constants for manipulator position control (tuned for balanced acceleration and deceleration)
+		const float kDerivative[NUM_MANIPULATOR_JOINTS] =
 		{
-			0.00001,
-			0.00001,
-			0.00001,
-			0.00001,
-			0.00001,
-			0.00001,
-			0.00001
+			0.2,
+			0.2,
+			0.2,
+			0.2,
+			0.2,
+			0.2,
+			0.2
 		};
-
-		// Integral accumulator limit to control oscillations
-		const float kIntegralLimit = 0.1;
-		const float kIntegralStepLimit = 0.0005;
 
 		// Maximum step by which the motor controller power can change by per cycle
 		const float powerChangeMax = 0.03;
-
-		// Deadband in degrees within which a position error will be accepted
-		const float errorDeadband = 1.0;
 
 		// Maximum current value, upper and lower bounds, adjusted by throttle
 		const float maxCurrentUpper = 15;
 		const float maxCurrentLower = 10;
 
-		std::shared_ptr<Victor> motorControllers[NUM_MANIPULATOR_MOTORS];
-		std::shared_ptr<AnalogPotentiometer> potentiometers[NUM_MANIPULATOR_MOTORS];
+		std::shared_ptr<Victor> motorControllers[NUM_MANIPULATOR_JOINTS];
+		std::shared_ptr<AnalogPotentiometer> potentiometers[NUM_MANIPULATOR_JOINTS];
 
-		float destPosition[NUM_MANIPULATOR_MOTORS];
-		float trackPosition[NUM_MANIPULATOR_MOTORS];
+		float destPosition[NUM_MANIPULATOR_JOINTS];
+		float trackPosition[NUM_MANIPULATOR_JOINTS];
 
-		float lastSpeed[NUM_MANIPULATOR_MOTORS];
-		float lastPower[NUM_MANIPULATOR_MOTORS];
-		float integralAccumulator[NUM_MANIPULATOR_MOTORS];
-		float capPower[NUM_MANIPULATOR_MOTORS+1];
+		float lastSpeed[NUM_MANIPULATOR_JOINTS];
+		float lastPower[NUM_MANIPULATOR_JOINTS];
+		float lastError[NUM_MANIPULATOR_JOINTS];
+		float capPower[NUM_MANIPULATOR_MOTORS];
 
 		uint32_t lastRunTimestamp;
 		Joystick *joystick;
 		Safety *safety;
-		Preferences *perfs;
 };
 
 #endif /* SRC_MANIPULATOR_H_ */
