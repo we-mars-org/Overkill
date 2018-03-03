@@ -42,10 +42,12 @@ enum JoystickButtons
 {
 	// On drive joystick (id: 0)
 	DriveEnable = 1,
-	DriveOverride = 2,
+	DriveRun = 2,
+	DriveOverride = 3,
 	// On manipulator joystick (id: 1)
 	ManipulatorEnable = 1,
-	ManipulatorControllable = 2
+	ManipulatorRun = 2,
+	ManipulatorControllable = 3
 };
 
 // Assign IDs to Drive Motors for use with other const arrays defined below
@@ -214,7 +216,7 @@ const float manipulatorPotentiometerOffset[NUM_MANIPULATOR_JOINTS] =
 	0.470,
 	0.485,
 	0.460,
-	0.545
+	0.625
 };
 
 // Array associating joint limits (in degrees) to corresponding Manipulator Motor IDs (array index)
@@ -227,18 +229,6 @@ const float manipulatorJointLimits[NUM_MANIPULATOR_JOINTS][2] =
 	{-110, 110}, // Hard stop at 140
 	{-105, 105}, // Hard stop at 146
 	{-50, 50}    // Hard stop at 54
-};
-
-// Array associating stowed pose joint angles to corresponding Manipulator Motor IDs (array index)
-const float manipulatorPositionStow[NUM_MANIPULATOR_JOINTS] =
-{
-	 0,
-	 0,
-	 0,//110,
-	 0,
-	 0,//110,
-	 0,
-	 0
 };
 
 /**

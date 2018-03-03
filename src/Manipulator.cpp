@@ -50,9 +50,9 @@ void Manipulator::update()
 	}
 
 	// Calculate the trajectory from current position to the target position
-	// The trajectory updates only if ManipulatorEnable button on the joystick is held
+	// The trajectory updates only if ManipulatorRun button on the joystick is held
 
-	if(joystick->GetRawButton(ManipulatorEnable))
+	if(joystick->GetRawButton(ManipulatorRun))
 	{
 		float travelAngle = 0, capSpeed = 0;
 		for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
@@ -91,26 +91,44 @@ void Manipulator::update()
 	}
 
 	// Perform proportional-integral control to obtain desired motor position
+	// Motor power is set to zero if the ManipulatorEnable button on the joystick is not held
 
-	float positionError = 0, powerChange = 0;
-
-	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
+	if(joystick->GetRawButton(ManipulatorEnable))
 	{
-		trackPosition[i] = constrain(trackPosition[i], manipulatorJointLimits[i][0], manipulatorJointLimits[i][1]);
-		positionError = trackPosition[i] - jointPosition[i];
+		float positionError = 0, powerChange = 0;
+		for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
+		{
+			trackPosition[i] = constrain(trackPosition[i], manipulatorJointLimits[i][0], manipulatorJointLimits[i][1]);
+			positionError = trackPosition[i] - jointPosition[i];
 
-		powerChange = positionError * kProportional[i] + (positionError - lastError[i]) * kDerivative[i] - lastPower[i];
-		powerChange = constrain(powerChange, -powerChangeMax, powerChangeMax);
+			powerChange = positionError * kProportional[i] + (positionError - lastError[i]) * kDerivative[i] - lastPower[i];
+			powerChange = constrain(powerChange, -powerChangeMax, powerChangeMax);
 
-		lastError[i] = positionError;
-		lastPower[i] += powerChange;
-		lastPower[i] = constrain(lastPower[i], -(capPower[i] + 0.1), (capPower[i] + 0.1)); // Allow extra to see if motor is saturating
-		motorControllers[i]->Set(constrain(lastPower[i], -capPower[i], capPower[i]));
+			lastError[i] = positionError;
+			lastPower[i] += powerChange;
+			lastPower[i] = constrain(lastPower[i], -(capPower[i] + 0.1), (capPower[i] + 0.1)); // Allow extra to see if motor is saturating
+			motorControllers[i]->Set(constrain(lastPower[i], -capPower[i], capPower[i]));
+		}
+	}
+	else
+	{
+		for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
+		{
+			motorControllers[i]->Set(0);
+			trackPosition[i] = potentiometers[i]->Get();
+			destPosition[i] = potentiometers[i]->Get();
+			lastSpeed[i] = 0;
+			lastPower[i] = 0;
+			lastError[i] = 0;
+		}
+		for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
+			capPower[i] = 0;
 	}
 
-	// Packet length = 3 * (3 + 7 * 5 + 8 * 2) = 162
+	// Packet length = 3 * (4 + 7 * 5 + 8 * 2) = 165
 	std::string data = "MANIP:";
 	data += numToString(joystick->GetRawButton(ManipulatorEnable) ? 1 : 0);
+	data += numToString(joystick->GetRawButton(ManipulatorRun) ? 1 : 0);
 	data += numToString(joystick->GetRawButton(ManipulatorControllable) ? 1 : 0);
 	data += numToString(maxCurrent/100.0);
 	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
@@ -151,7 +169,7 @@ void Manipulator::reset()
 	{
 		motorControllers[i]->Set(0);
 		trackPosition[i] = potentiometers[i]->Get();
-		destPosition[i] = manipulatorPositionStow[i];
+		destPosition[i] = potentiometers[i]->Get();
 		lastSpeed[i] = 0;
 		lastPower[i] = 0;
 		lastError[i] = 0;

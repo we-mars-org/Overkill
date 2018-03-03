@@ -23,25 +23,25 @@ class Manipulator
 		// Proportional constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kProportional[NUM_MANIPULATOR_JOINTS] =
 		{
-			0.03,
-			0.03,
-			0.03,
-			0.03,
-			0.03,
-			0.03,
-			0.03
+			0.01,
+			0.015,
+			0.015,
+			0.01,
+			0.005,
+			0.005,
+			0.02
 		};
 
 		// Derivative constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kDerivative[NUM_MANIPULATOR_JOINTS] =
 		{
+			0.4,
+			0.6,
+			0.6,
+			0.4,
 			0.2,
-			0.2,
-			0.2,
-			0.2,
-			0.2,
-			0.2,
-			0.2
+			0.1,
+			0.4
 		};
 
 		// Maximum step by which the motor controller power can change by per cycle

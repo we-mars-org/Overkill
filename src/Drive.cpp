@@ -35,11 +35,11 @@ void Drive::update()
 	}
 
 	// Calculate desired motor speeds from joystick input
-	// Rover will not drive (hold at zero speed) unless the DriveEnable button on the joystick is held
+	// Rover will not drive (hold at zero speed) unless the DriveRun button on the joystick is held
 
 	float forwardSpeed = joystick->GetRawAxis(DriveForward);
 	float turnSpeed = joystick->GetRawAxis(DriveTurn);
-	if(!joystick->GetRawButton(DriveEnable)) forwardSpeed = turnSpeed = 0;
+	if(!joystick->GetRawButton(DriveRun)) forwardSpeed = turnSpeed = 0;
 
 	float leftSpeed = constrain(forwardSpeed + turnSpeed, -1, 1);
 	float rightSpeed = constrain(forwardSpeed - turnSpeed, -1, 1);
@@ -88,23 +88,39 @@ void Drive::update()
 	}
 
 	// Perform integral control to obtain desired motor speed
-	float speedError = 0;
+	// Motor power is set to zero if the DriveEnable button on the joystick is not held
 
-	for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i)
+	if(joystick->GetRawButton(DriveEnable))
 	{
-		if(i <= RightRearMotor)
-			speedError = adjRightSpeed - motorSpeed[i];
-		else
-			speedError = adjLeftSpeed - motorSpeed[i];
+		float speedError = 0;
+		for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i)
+		{
+			if(i <= RightRearMotor)
+				speedError = adjRightSpeed - motorSpeed[i];
+			else
+				speedError = adjLeftSpeed - motorSpeed[i];
 
-		lastPower[i] += constrain(speedError * kIntegral, -powerChangeMax, powerChangeMax);
-		lastPower[i] = constrain(lastPower[i], -(capPower[i] + 0.1), (capPower[i] + 0.1)); // Allow extra to see if motor is saturating
-		motorControllers[i]->Set(constrain(lastPower[i], -capPower[i], capPower[i]));
+			lastPower[i] += constrain(speedError * kIntegral, -powerChangeMax, powerChangeMax);
+			lastPower[i] = constrain(lastPower[i], -(capPower[i] + 0.1), (capPower[i] + 0.1)); // Allow extra to see if motor is saturating
+			motorControllers[i]->Set(constrain(lastPower[i], -capPower[i], capPower[i]));
+
+		}
+	}
+	else
+	{
+		for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i)
+		{
+			motorControllers[i]->Set(0);
+			lastEncoder[i] = encoders[i]->GetRaw();
+			lastPower[i] = 0;
+			capPower[i] = 0;
+		}
 	}
 
-	// Packet length = 3 * (9 + 6 * 4) = 90
+	// Packet length = 3 * (10 + 6 * 4) = 102
 	std::string data = "DRIVE:";
 	data += numToString(joystick->GetRawButton(DriveEnable) ? 1 : 0);
+	data += numToString(joystick->GetRawButton(DriveRun) ? 1 : 0);
 	data += numToString(joystick->GetRawButton(DriveOverride) ? 1 : 0);
 	data += numToString(maxCurrent/100.0);
 	data += numToString(forwardSpeed);
