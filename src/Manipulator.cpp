@@ -24,16 +24,15 @@ void Manipulator::update()
 	float maxCurrent = map(joystick->GetRawAxis(CurrentLimit), -1, 1, maxCurrentLower, maxCurrentUpper);
 
 	// Get motor currents and use it to adjust the power cap
-	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
+	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
 	{
 		float current = safety->getManipulatorCurrent(i);
 		if(current > maxCurrent)
 			capPower[i] -= 5*powerChangeMax;
 		else if(current < (maxCurrent-1))
 			capPower[i] += powerChangeMax/2;
-		capPower[i] = constrain(capPower[i], 0, 1);
+		capPower[i] = constrain(capPower[i], 0, maxPower[i]);
 	}
-	capPower[ShoulderMotor2] = capPower[ShoulderMotor1] = std::min(capPower[ShoulderMotor1], capPower[ShoulderMotor2]);
 
 	// Get the target and current joint positions
     // The desired joint positions are read only if ManipulatorControllable button on the joystick is held
@@ -43,7 +42,7 @@ void Manipulator::update()
 	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
 	{
 		if(joystick->GetRawButton(ManipulatorControllable))
-			destPosition[i] = map(joystick->GetRawAxis(BasePosition+i), -1, 1, manipulatorJointLimits[i][0], manipulatorJointLimits[i][1]);
+			destPosition[i] = map(joystick->GetRawAxis(ElevatorPosition+i), -1, 1, manipulatorJointLimits[i][0], manipulatorJointLimits[i][1]);
 
 		destPosition[i] = constrain(destPosition[i], manipulatorJointLimits[i][0], manipulatorJointLimits[i][1]);
 		jointPosition[i] = potentiometers[i]->Get();
@@ -120,12 +119,11 @@ void Manipulator::update()
 			lastSpeed[i] = 0;
 			lastPower[i] = 0;
 			lastError[i] = 0;
-		}
-		for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
 			capPower[i] = 0;
+		}
 	}
 
-	// Packet length = 3 * (4 + 7 * 5 + 8 * 2) = 165
+	// Packet length = 3 * (4 + 5 * 7) = 117
 	std::string data = "MANIP:";
 	data += numToString(joystick->GetRawButton(ManipulatorEnable) ? 1 : 0);
 	data += numToString(joystick->GetRawButton(ManipulatorRun) ? 1 : 0);
@@ -141,25 +139,16 @@ void Manipulator::update()
 		data += numToString(lastSpeed[i]/maxSpeed);
 	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
 		data += numToString(lastPower[i]);
-	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
+	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
 		data += numToString(safety->getManipulatorCurrent(i)/100.0);
-	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
+	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
 		data += numToString(capPower[i]);
-	data+=":MANIP";
+	data += ":MANIP";
 	std::cout << data << std::endl;
 
 	/*
-	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i) {
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Target Angle",  0.9*map(destPosition[i],manipulatorJointLimits[i][0],manipulatorJointLimits[i][1],-1,1));
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Track Angle", 0.9*map(trackPosition[i],manipulatorJointLimits[i][0],manipulatorJointLimits[i][1],-1,1));
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Current Angle", 0.9*map(jointPosition[i],manipulatorJointLimits[i][0],manipulatorJointLimits[i][1],-1,1));
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Track Speed", 0.9*lastSpeed[i]/maxSpeed);
-		SmartDashboard::PutNumber(manipulatorJointNames[i]+" Power", 0.9*lastPower[i]);
-	}
-	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i) {
-		SmartDashboard::PutNumber(manipulatorMotorNames[i]+" Current", 0.9*safety->getManipulatorCurrent(i)/maxCurrent);
-		SmartDashboard::PutNumber(manipulatorMotorNames[i]+" Power Cap", 0.9*capPower[i]);
-	}
+	for(unsigned i = 0; i < NUM_MANIPULATOR_JOINTS; ++i)
+		std::cout << "Pot " << i << ": " << jointPosition[i] << std::endl;
 	*/
 }
 
@@ -173,9 +162,7 @@ void Manipulator::reset()
 		lastSpeed[i] = 0;
 		lastPower[i] = 0;
 		lastError[i] = 0;
-	}
-	for(unsigned i = 0; i < NUM_MANIPULATOR_MOTORS; ++i)
 		capPower[i] = 0;
-
+	}
 	lastRunTimestamp = getTimestampMicros() - manipulatorPeriod;
 }

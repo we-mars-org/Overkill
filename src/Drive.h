@@ -28,6 +28,9 @@ class Drive
 		// Maximum drive motor velocity in encoder counts per loop period (refer to calculation above)
 		const float maxSpeed = (float)(2400 * drivePeriod / 1000000); // drivePeriod is in microseconds per period
 
+		// Encoder counts per centimeter wheel travel
+		const float countsPerCentimeter = 30;
+
 		// Integral constant for drive speed control (tuned for balanced acceleration and deceleration)
 		const float kIntegral = 0.002;
 
@@ -44,6 +47,9 @@ class Drive
 		uint32_t lastEncoder[NUM_DRIVE_MOTORS];
 		float lastPower[NUM_DRIVE_MOTORS];
 		float capPower[NUM_DRIVE_MOTORS];
+
+		// Average distance traveled by rover in centimeters
+		float distanceTravelled;
 
 		uint32_t lastRunTimestamp;
 		Joystick *joystick;

@@ -46,15 +46,21 @@ void Drive::update()
 	leftSpeed = map(leftSpeed, -1, 1, -maxSpeed, maxSpeed);
 	rightSpeed = map(rightSpeed, -1, 1, -maxSpeed, maxSpeed);
 
-	// Calculate current motor speeds
+	// Calculate current motor speeds and average distance traveled
 	int motorSpeed[NUM_DRIVE_MOTORS], encoderVal = 0;
-
+	float avgEncoder = 0;
 	for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i)
 	{
 		encoderVal = encoders[i]->GetRaw();
 		motorSpeed[i] = encoderVal - lastEncoder[i];
 		lastEncoder[i] = encoderVal;
+
+		if(i <= RightRearMotor)
+			avgEncoder += motorSpeed[i];
+		else
+			avgEncoder -= motorSpeed[i];
 	}
+	distanceTravelled += fabs((avgEncoder / 6) / countsPerCentimeter);
 
 	// Perform motor saturation compensation by changing the desired speeds if a motor is saturated
 	// This helps maintain the drive trajectory even if a motor if facing increased torque loading
@@ -117,7 +123,7 @@ void Drive::update()
 		}
 	}
 
-	// Packet length = 3 * (10 + 6 * 4) = 102
+	// Packet length = 3 * (10 + 6 * 4) + 6 = 108
 	std::string data = "DRIVE:";
 	data += numToString(joystick->GetRawButton(DriveEnable) ? 1 : 0);
 	data += numToString(joystick->GetRawButton(DriveRun) ? 1 : 0);
@@ -137,24 +143,11 @@ void Drive::update()
 		data += numToString(safety->getDriveCurrent(i)/100.0);
 	for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i)
 		data += numToString(capPower[i]);
-	data+=":DRIVE";
+	for (int dist = (int)distanceTravelled; dist < 100000; dist = dist * 10)
+		data += "0";
+	data += std::to_string((int)distanceTravelled);
+	data += ":DRIVE";
 	std::cout << data << std::endl;
-
-	/*
-	SmartDashboard::PutNumber("Forward Speed Input", 0.9*forwardSpeed);
-	SmartDashboard::PutNumber("Turn Speed Input", 0.9*turnSpeed);
-	SmartDashboard::PutNumber("Left Desired Speed", 0.9*leftSpeed/maxSpeed);
-	SmartDashboard::PutNumber("Right Desired Speed", 0.9*rightSpeed/maxSpeed);
-	SmartDashboard::PutNumber("Left Adjusted Speed", 0.9*adjLeftSpeed/maxSpeed);
-	SmartDashboard::PutNumber("Right Adjusted Speed", 0.9*adjRightSpeed/maxSpeed);
-
-	for(unsigned i = 0; i < NUM_DRIVE_MOTORS; ++i) {
-		SmartDashboard::PutNumber(driveMotorNames[i]+" Speed", 0.9*motorSpeed[i]/maxSpeed);
-		SmartDashboard::PutNumber(driveMotorNames[i]+" Power", 0.9*lastPower[i]);
-		SmartDashboard::PutNumber(driveMotorNames[i]+" Current", 0.9*safety->getDriveCurrent(i)/maxCurrent);
-		SmartDashboard::PutNumber(driveMotorNames[i]+" Power Cap", 0.9*capPower[i]);
-	}
-	*/
 }
 
 void Drive::reset()
@@ -167,4 +160,5 @@ void Drive::reset()
 		capPower[i] = 0;
 	}
 	lastRunTimestamp = getTimestampMicros() - drivePeriod;
+	distanceTravelled = 1;
 }

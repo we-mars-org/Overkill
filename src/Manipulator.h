@@ -15,37 +15,43 @@ class Manipulator
 
 	private:
 		// Maximum joint angle velocity (in degrees per second times manipulatorPeriod in seconds/cycle)
-		const float maxSpeed = 50.0 * ((float)manipulatorPeriod / 1000000.0);
+		const float maxSpeed = 20.0 * ((float)manipulatorPeriod / 1000000.0);
 
 		// Maximum joint angle acceleration (in degrees per second squared times manipulatorPeriod in seconds/cycle squared)
-		const float maxAccel = 50.0 * ((float)manipulatorPeriod / 1000000.0) * ((float)manipulatorPeriod / 1000000.0);
+		const float maxAccel = 30.0 * ((float)manipulatorPeriod / 1000000.0) * ((float)manipulatorPeriod / 1000000.0);
+
+		// Maximum power for each motor
+		const float maxPower[NUM_MANIPULATOR_JOINTS] =
+		{
+			0.8,
+			0.6,
+			0.4,
+			0.6,
+			0.3
+		};
 
 		// Proportional constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kProportional[NUM_MANIPULATOR_JOINTS] =
 		{
+			0.08,
+			0.08,
+			0.02,
 			0.01,
-			0.015,
-			0.015,
-			0.01,
-			0.005,
-			0.005,
-			0.02
+			0.01
 		};
 
 		// Derivative constants for manipulator position control (tuned for balanced acceleration and deceleration)
 		const float kDerivative[NUM_MANIPULATOR_JOINTS] =
 		{
-			0.4,
-			0.6,
-			0.6,
-			0.4,
-			0.2,
-			0.1,
-			0.4
+			0.0,
+			0.0,
+			0.0,
+			0.0,
+			0.0
 		};
 
 		// Maximum step by which the motor controller power can change by per cycle
-		const float powerChangeMax = 0.03;
+		const float powerChangeMax = 0.02;
 
 		// Maximum current value, upper and lower bounds, adjusted by throttle
 		const float maxCurrentUpper = 15;
@@ -60,7 +66,7 @@ class Manipulator
 		float lastSpeed[NUM_MANIPULATOR_JOINTS];
 		float lastPower[NUM_MANIPULATOR_JOINTS];
 		float lastError[NUM_MANIPULATOR_JOINTS];
-		float capPower[NUM_MANIPULATOR_MOTORS];
+		float capPower[NUM_MANIPULATOR_JOINTS];
 
 		uint32_t lastRunTimestamp;
 		Joystick *joystick;

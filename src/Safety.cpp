@@ -35,7 +35,7 @@ void Safety::update()
 			return;
 		}
 	}
-	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS; ++i)
+	for(unsigned i = 0; i < ManipulatorJoints::NUM_MANIPULATOR_JOINTS; ++i)
 	{
 		current = (float)(pdp->GetCurrent(manipulatorPowerChannels[i]));
 		lastManipulatorSafetyCurrent[i] = ((1-currentSafetyFilter) * lastManipulatorSafetyCurrent[i]) + currentSafetyFilter * current;
@@ -58,7 +58,7 @@ void Safety::reset()
 		lastDriveSafetyCurrent[i] = 0;
 		lastDriveControlCurrent[i] = 0;
 	}
-	for(unsigned i = 0; i < ManipulatorMotors::NUM_MANIPULATOR_MOTORS; ++i)
+	for(unsigned i = 0; i < ManipulatorJoints::NUM_MANIPULATOR_JOINTS; ++i)
 	{
 		lastManipulatorSafetyCurrent[i] = 0;
 		lastManipulatorControlCurrent[i] = 0;
